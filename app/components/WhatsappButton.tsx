@@ -18,7 +18,7 @@ export default function WhatsappButton() {
       href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-10 z-50 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-colors"
+      className="fixed bottom-6 right-4 z-50 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-colors"
       aria-label="واتساب"
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">

@@ -149,9 +149,9 @@ export default async function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-[#1F7A8C] flex items-center justify-between max-w-6xl mx-auto px-4 py-4 text-xs text-[#F5F7F8]">
+      <div className="border-t border-[#1F7A8C] flex items-center justify-between max-w-6xl mx-auto px-4 py-4 text-xs text-[#F5F7F8] flex-wrap gap-2">
         <span>الحقوق محفوظة مؤسسة البلاد الحديثة للإلكترونيات © 2026</span>
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
           <Image src="/cc975b.png" alt="بطاقة ائتمانية" width={50} height={30} className="object-contain" style={{ width: "auto" }} />
           <Image src="/mada975b.png" alt="بطاقة مدى" width={50} height={30} className="object-contain" style={{ width: "auto" }} />
         </div>
