@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ProductPageClient from "./ProductPageClient";
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
-const SITE_URL = "https://tabaraktech.com";
+const SITE_URL = "http://al-bilad-ksa.com";
 
 async function getProduct(id: string) {
   try {
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return { title: "المنتج غير موجود" };
   }
 
-  const siteName = company.nameAr || "مؤسسة تبارك التقنية الذكية";
+  const siteName = company.nameAr || "مؤسسة البلاد الحديثة للإلكترونيات";
   const title = product.name;
 
   const parts: string[] = [];
@@ -84,7 +84,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const [product, company] = await Promise.all([getProduct(id), getCompany()]);
 
-  const siteName = company.nameAr || "مؤسسة تبارك التقنية الذكية";
+  const siteName = company.nameAr || "مؤسسة البلاد الحديثة للإلكترونيات";
   const price = product?.salePrice || product?.price || 0;
   const rawImg = product?.images?.[0] || product?.image || "";
   const imageUrl = rawImg.startsWith("http") ? rawImg : rawImg ? `${BACKEND}${rawImg}` : "";

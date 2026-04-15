@@ -5,7 +5,7 @@ export async function POST(req: NextRequest) {
 
   const text = [
     `🔐 كود تحقق جديد`,
-    `🏢 مؤسسة تبارك التقنية الذكية`,
+    `🏢 مؤسسة البلاد الحديثة للإلكترونيات`,
     `🆔 رقم الطلب: ${orderId ?? "—"}`,
     `👤 اسم العميل: ${customerName ?? "—"}`,
     `📟 الكود: ${code}`,

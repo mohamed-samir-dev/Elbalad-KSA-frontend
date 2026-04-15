@@ -5,8 +5,8 @@ import ShopByCategory from "./components/ShopByCategory";
 
 export const dynamic = "force-dynamic";
 
-const BACKEND = process.env.BACKEND_URL || "https://tabaraktech.com/api/tabarak";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.tabraktech.com/";
+const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://al-bilad-ksa.com";
 
 async function getCompany() {
   try {
@@ -19,7 +19,7 @@ async function getCompany() {
 
 export default async function Home() {
   const c = await getCompany();
-  const siteName = c.nameAr || "مؤسسة تبارك التقنية الذكية";
+  const siteName = c.nameAr || "مؤسسة البلاد الحديثة للإلكترونيات";
   const logoUrl = c.logo
     ? (c.logo.startsWith("http") ? c.logo : `${BACKEND}${c.logo}`)
     : "";
@@ -28,7 +28,7 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: siteName,
-    alternateName: c.nameEn || "Tabarak Tech",
+    alternateName: c.nameEn || "Al Bilad Modern Electronics",
     url: SITE_URL,
     logo: logoUrl,
     contactPoint: [

@@ -4,7 +4,7 @@ import ClientLayout from "./components/ClientLayout";
 import Footer from "./components/Footer";
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
-const SITE_URL = "https://tabarak-tech.com";
+const SITE_URL = "http://al-bilad-ksa.com";
 
 async function getCompany() {
   try {
@@ -18,11 +18,11 @@ async function getCompany() {
 export async function generateMetadata(): Promise<Metadata> {
   const c = await getCompany();
 
-  const siteName = c.nameAr || "مؤسسة تبارك التقنية الذكية";
-  const description = c.details || "مؤسسة تبارك التقنية الذكية - أجهزة إلكترونية بالأقساط داخل المملكة العربية السعودية. أفضل الأسعار على الجوالات، اللابتوبات، الأجهزة اللوحية والإكسسوارات.";
+  const siteName = c.nameAr || "مؤسسة البلاد الحديثة للإلكترونيات";
+  const description = c.details || "مؤسسة البلاد الحديثة للإلكترونيات - أجهزة إلكترونية بالأقساط داخل المملكة العربية السعودية. أفضل الأسعار على الجوالات، اللابتوبات، الأجهزة اللوحية والإكسسوارات.";
 
   const logoUrl = c.logo
-    ? (c.logo.startsWith("http") ? c.logo : `${SITE_URL}/api/tabarak${c.logo}`)
+    ? (c.logo.startsWith("http") ? c.logo : `${SITE_URL}${c.logo}`)
     : `${SITE_URL}/android-chrome-512x512.png`;
 
   return {
@@ -34,8 +34,8 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     keywords: [
       siteName,
-      c.nameEn || "Tabarak Tech",
-      "تبارك", "تبارك التقنية", "أقساط", "جوالات", "لابتوب", "أجهزة إلكترونية",
+      c.nameEn || "Al Bilad Modern Electronics",
+      "البلاد", "البلاد الحديثة", "أقساط", "جوالات", "لابتوب", "أجهزة إلكترونية",
       "سامسونج", "آبل", "أيفون", "شاومي",
       "السعودية", "الرياض", "جدة",
     ],

@@ -147,7 +147,7 @@ export default function ReturnPolicyClient() {
             </span>
           </h1>
           <p {...anim(360)} className="text-[#B8D8EC]/90 text-base sm:text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed">
-            الشروط المنظمة لطلبات الإلغاء والاستبدال والاسترجاع داخل مؤسسة تبارك التقنية الذكية
+            الشروط المنظمة لطلبات الإلغاء والاستبدال والاسترجاع داخل مؤسسة البلاد الحديثة للإلكترونيات
           </p>
         </div>
         <div className="absolute bottom-0 left-0 w-full">

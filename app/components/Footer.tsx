@@ -59,7 +59,7 @@ export default async function Footer() {
         <div>
           <h3 className="text-[#6DBE00] font-bold text-xl mb-3">من نحن</h3>
           <p className="text-sm leading-relaxed text-[#F5F7F8]">
-            {c.details || "مؤسسة تبارك التقنية الذكية هي اختيارك الأول لشراء أجهزتك بالأقساط داخل السعودية، ضمان موثوق وخدمة محلية."}
+            {c.details || "مؤسسة البلاد الحديثة للإلكترونيات هي اختيارك الأول لشراء أجهزتك بالأقساط داخل السعودية، ضمان موثوق وخدمة محلية."}
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export default async function Footer() {
           <h3 className="text-[#6DBE00] font-bold text-xl mb-4">روابط مهمة</h3>
           <ul className="space-y-2.5 text-sm">
             {[
-              { label: "عن مؤسسة تبارك التقنية الذكية", href: "/about" },
+              { label: "عن مؤسسة البلاد الحديثة للإلكترونيات", href: "/about" },
               { label: "طرق الدفع", href: "/payment" },
               { label: "سياسة الاستبدال والاسترجاع", href: "/return-policy" },
               { label: "سياسة الخصوصية واتفاقية الاستخدام", href: "/privacy" },
@@ -150,7 +150,7 @@ export default async function Footer() {
       </div>
 
       <div className="border-t border-[#1F7A8C] flex items-center justify-between max-w-6xl mx-auto px-4 py-4 text-xs text-[#F5F7F8]">
-        <span>الحقوق محفوظة مؤسسة تبارك التقنية الذكية © 2026</span>
+        <span>الحقوق محفوظة مؤسسة البلاد الحديثة للإلكترونيات © 2026</span>
         <div className="flex gap-2">
           <Image src="/cc975b.png" alt="بطاقة ائتمانية" width={50} height={30} className="object-contain" style={{ width: "auto" }} />
           <Image src="/mada975b.png" alt="بطاقة مدى" width={50} height={30} className="object-contain" style={{ width: "auto" }} />

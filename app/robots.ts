@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin/", "/api/", "/checkout/verify/"],
       },
     ],
-    sitemap: "https://tabarak-tech.com/sitemap.xml",
-    host: "https://tabarak-tech.com",
+    sitemap: "http://al-bilad-ksa.com/sitemap.xml",
+    host: "http://al-bilad-ksa.com",
   };
 }

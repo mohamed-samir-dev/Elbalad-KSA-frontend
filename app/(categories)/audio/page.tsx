@@ -4,7 +4,7 @@ import AudioClient from "./AudioClient";
 export const dynamic = "force-dynamic";
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
-const SITE_URL = "https://tabaraktech.com";
+const SITE_URL = "http://al-bilad-ksa.com";
 
 async function getCompany() {
   try {
@@ -17,7 +17,7 @@ async function getCompany() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const company = await getCompany();
-  const siteName = company.nameAr || "مؤسسة تبارك التقنية الذكية";
+  const siteName = company.nameAr || "مؤسسة البلاد الحديثة للإلكترونيات";
   const title = `أجهزة صوت وسماعات | ${siteName}`;
   const description = `تسوق سماعات أبل وأجهزة الصوت بأفضل الأسعار في ${siteName}. شحن سريع وضمان معتمد.`;
   const logoUrl = company.logo

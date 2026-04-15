@@ -5,7 +5,7 @@ import CategoryPageClient from "./CategoryPageClient";
 export const dynamic = "force-dynamic";
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
-const SITE_URL = "https://tabaraktech.com";
+const SITE_URL = "http://al-bilad-ksa.com";
 
 async function getCompany() {
   try {
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const config = slugConfigs[slug];
   const company = await getCompany();
 
-  const siteName = company.nameAr || "مؤسسة تبارك التقنية الذكية";
+  const siteName = company.nameAr || "مؤسسة البلاد الحديثة للإلكترونيات";
   const label = config?.label ?? slug;
   const parentLabel = config?.parentLabel ?? "";
 
