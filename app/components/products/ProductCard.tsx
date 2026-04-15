@@ -11,8 +11,13 @@ import { useCartStore } from "../../store/cartStore";
 const fmt = (n: number) => n.toLocaleString("en-US");
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-const resolveImg = (src: string) =>
-  src.startsWith("http") ? src : `${API}${src.startsWith("/") ? src : "/" + src}`;
+const resolveImg = (src: string) => {
+  if (src.startsWith("http")) {
+    const idx = src.indexOf("https://", 8);
+    return idx > 0 ? src.substring(idx) : src;
+  }
+  return `${API}${src.startsWith("/") ? src : "/" + src}`;
+};
 
 export default function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
   const { name, salePrice, discountPercent = 0 } = product;

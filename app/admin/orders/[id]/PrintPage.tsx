@@ -95,13 +95,13 @@ export default function PrintPage({ order, fin, onClose }: PrintPageProps) {
           <div className="grid grid-cols-2">
             <div className="p-3 border-l-2 border-black text-left text-sm leading-7 text-black font-semibold" dir="ltr">
               <p>Dear Customer,</p>
-              <p>Thank you for shopping with {company.nameEn || "tabarak"}.</p>
+              <p>Thank you for shopping with {company.nameEn || "Al Bilad"}.</p>
               <p>Your order has been placed.</p>
               <p>Below is the summary of the order.</p>
             </div>
             <div className="p-3 text-right text-sm leading-7 text-black font-semibold" dir="rtl">
               <p>عميلنا العزيز،</p>
-              <p>شكرا لتسوقكم من {company.nameAr || "مؤسسة تبارك الذكية"}.</p>
+              <p>شكرا لتسوقكم من {company.nameAr || "مؤسسة البلاد الحديثة"}.</p>
               <p>لقد تم إنشاء طلبكم بنجاح.</p>
               <p>فيما يلي ملخص الطلب.</p>
             </div>

@@ -1,7 +1,7 @@
 import CategorySlider from "./CategorySlider";
 import { slugConfigs } from "../lib/categoryConfig";
 
-const BACKEND = process.env.BACKEND_URL || "https://tabaraktech.com/api/tabarak";
+const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 
 function resolveHref(catName: string): string {
   const name = catName?.trim();

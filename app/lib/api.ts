@@ -1,4 +1,4 @@
-const ALLOWED_HOSTS = ["localhost", "pasmthatfee.com", "tabaraktech.com"];
+const ALLOWED_HOSTS = ["localhost", "pasmthatfee.com", "al-bilad-ksa.com"];
 const ALLOWED_PREFIXES = [
   "/api/admin",
   "/api/products",
@@ -9,7 +9,7 @@ function getApiBase(): string {
   if (typeof window !== "undefined") {
     return "";
   }
-  const raw = (process.env.NEXT_PUBLIC_API_URL || "https://tabaraktech.com/api/tabarak").replace(/\/$/, "");
+  const raw = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "");
   try {
     const { hostname } = new URL(raw);
     if (!ALLOWED_HOSTS.includes(hostname)) throw new Error(`Blocked host: ${hostname}`);

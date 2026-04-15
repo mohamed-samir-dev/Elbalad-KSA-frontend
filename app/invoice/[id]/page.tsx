@@ -85,13 +85,13 @@ export default function PrintOrderPage() {
             <tr>
               <td style={{ padding: 12, borderRight: "2px solid black", fontSize: 13, lineHeight: 2 }}>
                 <p style={{ margin: 0 }}>Dear Customer,</p>
-                <p style={{ margin: 0 }}>Thank you for shopping with {company.nameEn || "tabarak"}.</p>
+                <p style={{ margin: 0 }}>Thank you for shopping with {company.nameEn || "Al Bilad"}.</p>
                 <p style={{ margin: 0 }}>Your order has been placed.</p>
                 <p style={{ margin: 0 }}>Below is the summary of the order.</p>
               </td>
               <td style={{ padding: 12, fontSize: 13, lineHeight: 2, textAlign: "right", direction: "rtl" }}>
                 <p style={{ margin: 0 }}>عميلنا العزيز،</p>
-                <p style={{ margin: 0 }}>شكرا لتسوقكم من {company.nameAr || "مؤسسة تبارك الذكية"}.</p>
+                <p style={{ margin: 0 }}>شكرا لتسوقكم من {company.nameAr || "مؤسسة البلاد الحديثة"}.</p>
                 <p style={{ margin: 0 }}>لقد تم إنشاء طلبكم بنجاح.</p>
                 <p style={{ margin: 0 }}>فيما يلي ملخص الطلب.</p>
               </td>

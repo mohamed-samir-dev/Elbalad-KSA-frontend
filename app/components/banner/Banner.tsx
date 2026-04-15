@@ -1,6 +1,6 @@
 import BannerSlider from "./BannerSlider";
 
-const API = process.env.BACKEND_URL || "https://tabaraktech.com/api/tabarak";
+const API = process.env.BACKEND_URL || "http://localhost:5000";
 
 export default async function Banner() {
   let images: string[] = [];
