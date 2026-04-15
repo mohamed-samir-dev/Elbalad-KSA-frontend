@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
 import type { Product } from "./types";
@@ -65,7 +65,7 @@ const categoryPageMap: Record<string, string> = {
   "العاب": "/games/ps5-games",
 };
 
-function CategoryRow({ category, items, isFirst }: { category: string; items: Product[]; isFirst?: boolean }) {
+const CategoryRow = memo(function CategoryRow({ category, items, isFirst }: { category: string; items: Product[]; isFirst?: boolean }) {
   const visible = items.slice(0, LIMIT);
   const href = categoryPageMap[category] ?? categoryPageMap[category.toLowerCase()] ?? `/search?q=${encodeURIComponent(category)}`;
 
@@ -92,7 +92,7 @@ function CategoryRow({ category, items, isFirst }: { category: string; items: Pr
       </div>
     </div>
   );
-}
+});
 
 type HomeSettings = { category: string; subCategory: string; showInHome: boolean; order: number };
 type HomeConfig = { settings: HomeSettings[]; max: number };

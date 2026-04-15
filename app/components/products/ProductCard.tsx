@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { memo, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { IoCartOutline, IoCheckmarkCircleOutline } from "react-icons/io5";
@@ -19,18 +18,17 @@ const resolveImg = (src: string) => {
   return `${API}${src.startsWith("/") ? src : "/" + src}`;
 };
 
-export default function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
+function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
   const { name, salePrice, discountPercent = 0 } = product;
   const image = product.images?.[0] || product.image;
   const resolvedImage = image ? resolveImg(image) : undefined;
   const originalPrice = product.originalPrice ?? product.price ?? 0;
   const hasDiscount = salePrice != null && salePrice !== originalPrice;
   const addItem = useCartStore((s) => s.addItem);
-  const router = useRouter();
   const [added, setAdded] = useState(false);
   const [toast, setToast] = useState(false);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     addItem(product);
     setAdded(true);
@@ -39,9 +37,9 @@ export default function ProductCard({ product, priority = false }: { product: Pr
       setToast(false);
       setAdded(false);
       window.scrollTo(0, 0);
-      router.push("/cart");
-    }, 1000);
-  };
+      window.location.href = "/cart";
+    }, 800);
+  }, [addItem, product]);
 
   return (
     <>
@@ -131,3 +129,5 @@ export default function ProductCard({ product, priority = false }: { product: Pr
     </>
   );
 }
+
+export default memo(ProductCard);
