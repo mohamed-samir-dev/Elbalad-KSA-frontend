@@ -82,7 +82,7 @@ const sections = [
   { title: "الدفع المعتمد",     gradient: "from-[#0F4C6E] to-[#1F6F8B]",  Icon: IconShield,   content: ["يتم توفير طرق دفع متعددة وآمنة تناسب احتياجات العملاء."] },
   { title: "العملة المستخدمة", gradient: "from-[#7CC043] to-[#5a9030]",  Icon: IconCurrency, content: ["العملة الرسمية المستخدمة في جميع المعاملات هي الريال السعودي (SAR)."] },
   { title: "التحويل والشحن",   gradient: "from-[#0a3550] to-[#0F4C6E]",  Icon: IconShipping, content: ["يتم تنسيق الشحن بعد تأكيد الطلب حسب بيانات العميل."] },
-  { title: "ملاحظة هامة",      gradient: "from-[#1F6F8B] to-[#0a3550]",  Icon: IconInfo,     content: ["نحرص في مؤسسة تبارك التقنية الذكية على توفير تجربة دفع واضحة وآمنة.", "بعد إتمام الطلب سيتم مراجعة البيانات والتواصل مع العميل عند الحاجة لتأكيد التفاصيل أو استكمال إجراءات الطلب."] },
+  { title: "ملاحظة هامة",      gradient: "from-[#1F6F8B] to-[#0a3550]",  Icon: IconInfo,     content: ["نحرص في مؤسسة البلاد الحديثة للإلكترونيات على توفير تجربة دفع واضحة وآمنة.", "بعد إتمام الطلب سيتم مراجعة البيانات والتواصل مع العميل عند الحاجة لتأكيد التفاصيل أو استكمال إجراءات الطلب."] },
 ];
 
 interface Company { phone?: string; whatsapp?: string; email?: string; [k: string]: string | undefined; }
@@ -114,14 +114,16 @@ export default function PaymentClient({ company }: { company: Company }) {
         <div className="relative w-full px-4 sm:px-10 lg:px-20 py-14 sm:py-24 lg:py-32 text-center text-white">
           <div {...anim(100)} className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[11px] sm:text-sm font-medium text-blue-100 mb-4 sm:mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-[#7CC043] animate-pulse" />
-            مؤسسة تبارك التقنية الذكية
-          </div>
+            مؤسسة البلاد الحديثة للإلكترونيات          </div>
           <h1 {...anim(220)} className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-extrabold mb-3 sm:mb-5 leading-tight tracking-tight">
             تعرف على وسائل الدفع
             <span className="block text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(to left, #B8D8EC, #ffffff)' }}>المتاحة</span>
           </h1>
           <p {...anim(360)} className="text-[#B8D8EC]/90 text-sm sm:text-lg lg:text-xl max-w-xl sm:max-w-2xl mx-auto leading-relaxed px-2">
-            طرق دفع متعددة وآمنة تناسب احتياجات عملائنا داخل مؤسسة تبارك الذكية
+            طرق دفع متعددة وآمنة تناسب احتياجات عملائنا داخل  مؤسسة البلاد الحديثة للإلكترونيات
+
+
+
           </p>
         </div>
 
