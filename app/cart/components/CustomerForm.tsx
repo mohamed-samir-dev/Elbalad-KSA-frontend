@@ -16,7 +16,7 @@ interface CustomerFormProps {
 
 export default function CustomerForm({ total, itemCount, initialData, installmentMonths, onSubmit }: CustomerFormProps) {
   const MONTHS_OPTIONS = Array.from({ length: installmentMonths ?? 24 }, (_, i) => i + 1);
-  const minDownPayment = 1000 * itemCount;
+  const minDownPayment = 500 * itemCount;
   const DOWN_PAYMENT_OPTIONS = [minDownPayment, minDownPayment + 500, minDownPayment + 1000];
   const [name, setName] = useState(initialData?.name ?? "");
   const [nationalId, setNationalId] = useState(initialData?.nationalId ?? "");
