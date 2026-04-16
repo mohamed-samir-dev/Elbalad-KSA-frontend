@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IoCheckmarkCircle } from "react-icons/io5";
+import { IoCheckmarkCircle, IoPersonOutline, IoCashOutline, IoCallOutline, IoDocumentTextOutline, IoCalendarOutline, IoShieldCheckmarkOutline } from "react-icons/io5";
 import type { Product } from "../../../components/products/types";
 
 const fmt = (n: number) => n.toLocaleString("ar-SA");
@@ -13,6 +13,14 @@ const specLabels: [keyof NonNullable<Product["specs"]>, string][] = [
   ["os", "نظام التشغيل"], ["extras", "مميزات إضافية"],
 ];
 
+const conditionIcons = [
+  IoPersonOutline,
+  IoCashOutline,
+  IoCallOutline,
+  IoDocumentTextOutline,
+  IoCalendarOutline,
+];
+
 interface ProductDetailsProps {
   installment?: Product["installment"];
   description?: string;
@@ -21,17 +29,28 @@ interface ProductDetailsProps {
 
 type Tab = "specs" | "installment" | "description";
 
+function parseConditions(desc: string) {
+  const lines = desc.split("\n").map((l) => l.trim()).filter(Boolean);
+  const title = lines[0]?.replace(/:$/, "") || "";
+  const items = lines.slice(1).map((l) => l.replace(/^[•\-\*]\s*/, ""));
+  return { title, items };
+}
+
 export default function ProductDetails({ installment, description, specs }: ProductDetailsProps) {
   const hasSpecs = specs && Object.values(specs).some(Boolean);
+  const isConditions = description?.includes("الشروط الواجب توفرها");
+
   const tabs: { key: Tab; label: string; show: boolean }[] = [
     { key: "specs", label: "المواصفات", show: !!hasSpecs },
-    { key: "description", label: "الوصف", show: !!description },
+    { key: "description", label: isConditions ? "شروط التقسيط" : "الوصف", show: !!description },
     { key: "installment", label: "التقسيط", show: !!installment?.available },
   ];
   const visibleTabs = tabs.filter((t) => t.show);
   const [active, setActive] = useState<Tab>(visibleTabs[0]?.key || "specs");
 
   if (!visibleTabs.length) return null;
+
+  const parsed = isConditions && description ? parseConditions(description) : null;
 
   return (
     <div className="mt-6 sm:mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -69,8 +88,54 @@ export default function ProductDetails({ installment, description, specs }: Prod
           </div>
         )}
 
-        {/* Description */}
-        {active === "description" && description && (
+        {/* Description - Conditions Style */}
+        {active === "description" && description && isConditions && parsed && (
+          <div>
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#1F7A8C] to-[#155E6F] flex items-center justify-center shadow-md shadow-[#1F7A8C]/20">
+                <IoShieldCheckmarkOutline size={20} className="text-white" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-extrabold text-gray-900">{parsed.title}</h3>
+                <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">يرجى التأكد من استيفاء جميع الشروط</p>
+              </div>
+            </div>
+
+            {/* Conditions Cards */}
+            <div className="flex flex-col gap-2.5 sm:gap-3">
+              {parsed.items.map((item, i) => {
+                const Icon = conditionIcons[i % conditionIcons.length];
+                return (
+                  <div
+                    key={i}
+                    className="group flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-gray-100 bg-gradient-to-l from-[#f0f9fa]/60 to-white hover:border-[#1F7A8C]/20 hover:shadow-sm transition-all duration-300"
+                  >
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#1F7A8C]/10 flex items-center justify-center shrink-0 group-hover:bg-[#1F7A8C]/15 transition-colors">
+                      <Icon size={16} className="text-[#1F7A8C]" />
+                    </div>
+                    <div className="flex-1 min-w-0 pt-0.5 sm:pt-1">
+                      <p className="text-xs sm:text-sm font-semibold text-gray-700 leading-relaxed">{item}</p>
+                    </div>
+                    <div className="shrink-0 pt-0.5 sm:pt-1">
+                      <IoCheckmarkCircle size={18} className="text-[#7CC043]" />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Footer Note */}
+            <div className="mt-4 sm:mt-5 bg-amber-50 border border-amber-100 rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-center">
+              <p className="text-[10px] sm:text-xs font-bold text-amber-700">
+                ⚠️ عدم استيفاء أي من الشروط أعلاه قد يؤدي إلى رفض الطلب
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Description - Normal */}
+        {active === "description" && description && !isConditions && (
           <p className="text-xs sm:text-sm text-gray-600 leading-loose whitespace-pre-line">{description}</p>
         )}
 
