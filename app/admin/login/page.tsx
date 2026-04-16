@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
                   required
                   autoComplete="email"
                   inputMode="email"
-                  placeholder="admin@tbarak.com"
+                  placeholder="admin@albelad.com"
                   className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 sm:py-3.5 pr-11 text-xs sm:text-sm md:text-base text-gray-800 focus:outline-none focus:border-purple-500 focus:bg-white transition-all duration-200 placeholder-gray-400"
                 />
                 <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors pointer-events-none">
