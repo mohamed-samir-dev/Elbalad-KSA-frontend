@@ -161,7 +161,14 @@ body.checkout-page {
   100% { background-position: 0% 50%; }
 }
 .cart-btn-v2-bg {
-  display: none;
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+  animation: shimmerV2 1.5s infinite;
+  pointer-events: none;
 }
 @keyframes shimmerV2 {
   0% { left: -75%; }

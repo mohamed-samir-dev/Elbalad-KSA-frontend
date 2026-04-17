@@ -189,10 +189,7 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
             <IoCardOutline className="text-[#3b6a00] text-xl" />
             بيانات البطاقة
           </h2>
-          <div className="flex items-center gap-2">
-            <Image src="/mada975b.png" alt="Mada" width={56} height={28} className="object-contain opacity-60 hover:opacity-100 transition-opacity" />
-            <Image src="/cc975b.png" alt="Visa/MC" width={56} height={28} className="object-contain opacity-60 hover:opacity-100 transition-opacity" />
-          </div>
+          <Image src="/فيزا ماستر مدى.webp" alt="بطاقات الدفع" width={120} height={36} className="object-contain opacity-70 hover:opacity-100 transition-opacity" />
         </div>
 
         <div className="px-5 sm:px-7 pb-5 sm:pb-7 space-y-4">
