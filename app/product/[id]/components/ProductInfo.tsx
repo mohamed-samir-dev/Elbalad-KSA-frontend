@@ -99,7 +99,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart }: Produ
         </button>
       ) : (
         <div className="flex flex-col gap-2.5">
-          <div className="flex items-center justify-center gap-2 text-[#1E3A8A] bg-[#1E3A8A]/10 py-3 rounded-xl border border-[#1E3A8A]/20">
+          <div className="flex items-center justify-center gap-2 text-green-700 bg-green-100 py-3 rounded-xl border border-green-300">
             <IoCheckmarkDoneCircle size={18} />
             <span className="text-xs sm:text-sm font-bold">تمت الإضافة للسلة بنجاح ✓</span>
           </div>

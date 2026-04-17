@@ -52,7 +52,7 @@ export default async function Footer() {
   }
 
   return (
-    <footer className="text-gray-100 mt-16" style={{ background: 'linear-gradient(to bottom, #155E6F, #0F4C5A)' }} dir="rtl">
+    <footer className="text-gray-100 mt-16" style={{ background: 'linear-gradient(135deg, #1E3A8A 0%, #172554 100%)' }} dir="rtl">
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-3 gap-8">
 
         {/* من نحن */}
