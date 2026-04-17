@@ -163,16 +163,17 @@ body.checkout-page {
 .cart-btn-v2-bg {
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 60%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
   animation: shimmerV2 1.5s infinite;
   pointer-events: none;
+  will-change: transform;
 }
 @keyframes shimmerV2 {
-  0% { left: -75%; }
-  100% { left: 125%; }
+  0% { transform: translateX(-150%); }
+  100% { transform: translateX(280%); }
 }
 .cart-btn-v2:hover {
   transform: translateY(-2px) scale(1.03);
