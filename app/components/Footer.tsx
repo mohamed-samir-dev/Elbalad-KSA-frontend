@@ -106,22 +106,22 @@ export default async function Footer() {
             )}
           </ul>
 
-          <div className="flex gap-3 flex-wrap items-center">
+          <div className="flex gap-2 items-center flex-nowrap overflow-x-auto">
             {/* QR */}
             {qrSrc && (
               qrLink
                 ? <a href={qrLink} target="_blank" rel="noreferrer">
-                    <Image src={qrSrc} alt="رمز QR للتواصل" width={55} height={55} className="object-contain rounded border border-gray-200 bg-white p-1" style={{ width: "auto" }} />
+                    <Image src={qrSrc} alt="رمز QR للتواصل" width={60} height={60} className="object-contain rounded border border-gray-200 bg-white p-1" style={{ width: 60, height: 60 }} />
                   </a>
-                : <Image src={qrSrc} alt="رمز QR للتواصل" width={55} height={55} className="object-contain rounded border border-gray-200 bg-white p-1" style={{ width: "auto" }} />
+                : <Image src={qrSrc} alt="رمز QR للتواصل" width={60} height={60} className="object-contain rounded border border-gray-200 bg-white p-1" style={{ width: 60, height: 60 }} />
             )}
 
             {/* Footer Items */}
             {footerItems.map((item, i) => {
               const href = getHref(item);
               const el = (
-                <Image key={i} src={item.image} alt={`شعار شريك ${i + 1}`} width={60} height={40}
-                  className="object-contain rounded" style={{ width: 60, height: 40 }} />
+                <Image key={i} src={item.image} alt={`شعار شريك ${i + 1}`} width={60} height={60}
+                  className="object-contain rounded" style={{ width: 60, height: 60 }} />
               );
               return href
                 ? <a key={i} href={href} target="_blank" rel="noreferrer">{el}</a>
@@ -132,18 +132,18 @@ export default async function Footer() {
             {img1 && (
               link1
                 ? <a href={link1} target="_blank" rel="noreferrer">
-                    <Image src={img1} alt="وسيلة دفع معتمدة" width={90} height={60} className="object-contain rounded" style={{ width: 90, height: 60 }} />
+                    <Image src={img1} alt="وسيلة دفع معتمدة" width={60} height={60} className="object-contain rounded" style={{ width: 60, height: 60 }} />
                   </a>
-                : <Image src={img1} alt="وسيلة دفع معتمدة" width={90} height={60} className="object-contain rounded" style={{ width: 90, height: 60 }} />
+                : <Image src={img1} alt="وسيلة دفع معتمدة" width={60} height={60} className="object-contain rounded" style={{ width: 60, height: 60 }} />
             )}
 
             {/* img2 */}
             {img2 && (
               link2
                 ? <a href={link2} target="_blank" rel="noreferrer">
-                    <Image src={img2} alt="وسيلة دفع معتمدة" width={90} height={60} className="object-contain rounded" style={{ width: 90, height: 60 }} />
+                    <Image src={img2} alt="وسيلة دفع معتمدة" width={60} height={60} className="object-contain rounded" style={{ width: 60, height: 60 }} />
                   </a>
-                : <Image src={img2} alt="وسيلة دفع معتمدة" width={90} height={60} className="object-contain rounded" style={{ width: 90, height: 60 }} />
+                : <Image src={img2} alt="وسيلة دفع معتمدة" width={60} height={60} className="object-contain rounded" style={{ width: 60, height: 60 }} />
             )}
           </div>
         </div>
