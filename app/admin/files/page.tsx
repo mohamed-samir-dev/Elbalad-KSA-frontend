@@ -55,6 +55,20 @@ export default function FilesPage() {
       });
   }, []);
 
+  async function deleteImage(field: "qrImage" | "img1" | "img2", section: string, saveBody: object) {
+    setData((p) => ({ ...p, [field]: "" }));
+    await saveSection(section, saveBody);
+  }
+
+  async function deleteItemImage(index: number) {
+    setData((p) => {
+      const items = [...p.footerItems];
+      items[index] = { ...items[index], image: "" };
+      return { ...p, footerItems: items };
+    });
+    // سيتم الحفظ يدوياً بزر الحفظ
+  }
+
   async function uploadQr(file: File) {
     setUploading("qr");
     const fd = new FormData();
@@ -204,6 +218,12 @@ export default function FilesPage() {
             )}
             <input ref={qrRef} type="file" accept="image/*" className="hidden"
               onChange={(e) => e.target.files?.[0] && uploadQr(e.target.files[0])} />
+            {data.qrImage && (
+              <button onClick={(e) => { e.stopPropagation(); deleteImage("qrImage", "qr", { qrImage: "", qrLink: data.qrLink }); }}
+                className="absolute top-1 left-1 z-10 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors">
+                ×
+              </button>
+            )}
           </div>
           {/* رابط QR */}
           <div className="flex-1 min-w-0 w-full flex items-center gap-2">
@@ -259,6 +279,12 @@ export default function FilesPage() {
                   <input type="file" accept="image/*" className="hidden"
                     ref={(el) => { imgRefs.current[i] = el; }}
                     onChange={(e) => e.target.files?.[0] && uploadItemImg(i, e.target.files[0])} />
+                  {item.image && (
+                    <button onClick={(e) => { e.stopPropagation(); deleteItemImage(i); }}
+                      className="absolute top-1 left-1 z-10 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors">
+                      ×
+                    </button>
+                  )}
                 </div>
 
                 {/* رابط أو ملف */}
@@ -358,6 +384,12 @@ export default function FilesPage() {
             )}
             <input ref={img1Ref} type="file" accept="image/*" className="hidden"
               onChange={(e) => e.target.files?.[0] && uploadImg1(e.target.files[0])} />
+            {data.img1 && (
+              <button onClick={(e) => { e.stopPropagation(); deleteImage("img1", "s1", { img1: "", link1: data.link1, link1Type: data.linkType1, file1: data.file1 }); }}
+                className="absolute top-1 left-1 z-10 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors">
+                ×
+              </button>
+            )}
           </div>
           <div className="flex-1 min-w-0 w-full space-y-2">
             <div className="flex gap-4">
@@ -447,6 +479,12 @@ export default function FilesPage() {
             )}
             <input ref={img2Ref} type="file" accept="image/*" className="hidden"
               onChange={(e) => e.target.files?.[0] && uploadImg2(e.target.files[0])} />
+            {data.img2 && (
+              <button onClick={(e) => { e.stopPropagation(); deleteImage("img2", "s2", { img2: "", link2: data.link2, link2Type: data.linkType2, file2: data.file2 }); }}
+                className="absolute top-1 left-1 z-10 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors">
+                ×
+              </button>
+            )}
           </div>
           <div className="flex-1 min-w-0 w-full space-y-2">
             <div className="flex gap-4">
