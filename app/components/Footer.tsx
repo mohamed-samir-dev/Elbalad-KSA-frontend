@@ -106,7 +106,7 @@ export default async function Footer() {
             )}
           </ul>
 
-          <div className="flex gap-2 items-center flex-nowrap overflow-x-auto">
+          <div className="flex gap-2 items-center flex-nowrap overflow-x-auto justify-center sm:justify-start">
             {/* QR */}
             {qrSrc && (
               qrLink
