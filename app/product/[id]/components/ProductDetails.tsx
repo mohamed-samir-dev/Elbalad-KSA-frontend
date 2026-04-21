@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { IoCheckmarkCircle, IoDocumentTextOutline } from "react-icons/io5";
+import { IoCheckmarkCircle, IoDocumentTextOutline, IoListOutline, IoCardOutline } from "react-icons/io5";
 import type { Product } from "../../../components/products/types";
 
 const fmt = (n: number) => n.toLocaleString("ar-SA");
 
-const specLabels: [keyof NonNullable<Product["specs"]>, string][] = [
-  ["screen", "الشاشة"], ["processor", "المعالج"], ["ram", "الرام"], ["storage", "التخزين"],
-  ["rearCamera", "الكاميرا الخلفية"], ["frontCamera", "الكاميرا الأمامية"],
-  ["battery", "البطارية"], ["batteryLife", "عمر البطارية"], ["charging", "الشحن"],
-  ["os", "نظام التشغيل"], ["extras", "مميزات إضافية"],
+const specLabels: [keyof NonNullable<Product["specs"]>, string, string][] = [
+  ["screen", "الشاشة", "📱"], ["processor", "المعالج", "⚡"], ["ram", "الرام", "🧠"], ["storage", "التخزين", "💾"],
+  ["rearCamera", "الكاميرا الخلفية", "📸"], ["frontCamera", "الكاميرا الأمامية", "🤳"],
+  ["battery", "البطارية", "🔋"], ["batteryLife", "عمر البطارية", "⏱"], ["charging", "الشحن", "🔌"],
+  ["os", "نظام التشغيل", "💻"], ["extras", "مميزات إضافية", "✨"],
 ];
 
 interface ProductDetailsProps {
@@ -21,13 +21,19 @@ interface ProductDetailsProps {
 
 type Tab = "specs" | "installment" | "description";
 
+const tabMeta: Record<Tab, { icon: typeof IoListOutline; label: string }> = {
+  specs: { icon: IoListOutline, label: "المواصفات" },
+  description: { icon: IoDocumentTextOutline, label: "الوصف" },
+  installment: { icon: IoCardOutline, label: "التقسيط" },
+};
+
 export default function ProductDetails({ installment, description, specs }: ProductDetailsProps) {
   const hasSpecs = specs && Object.values(specs).some(Boolean);
 
-  const tabs: { key: Tab; label: string; show: boolean }[] = [
-    { key: "specs", label: "المواصفات", show: !!hasSpecs },
-    { key: "description", label: "الوصف", show: !!description },
-    { key: "installment", label: "التقسيط", show: !!installment?.available },
+  const tabs: { key: Tab; show: boolean }[] = [
+    { key: "specs", show: !!hasSpecs },
+    { key: "description", show: !!description },
+    { key: "installment", show: !!installment?.available },
   ];
   const visibleTabs = tabs.filter((t) => t.show);
   const [active, setActive] = useState<Tab>(visibleTabs[0]?.key || "specs");
@@ -35,35 +41,37 @@ export default function ProductDetails({ installment, description, specs }: Prod
   if (!visibleTabs.length) return null;
 
   return (
-    <div className="mt-6 sm:mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      {/* Tab Headers */}
+    <div className="mt-6 sm:mt-10 bg-white rounded-2xl sm:rounded-3xl shadow-lg shadow-black/[.04] border border-gray-100/80 overflow-hidden">
+      {/* Tabs */}
       <div className="flex border-b border-gray-100 overflow-x-auto scrollbar-hide">
-        {visibleTabs.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setActive(t.key)}
-            className={`flex-1 min-w-[100px] text-xs sm:text-sm font-bold py-3 sm:py-4 text-center transition-colors relative ${
-              active === t.key ? "text-[#1F7A8C]" : "text-gray-400 hover:text-gray-600"
-            }`}
-          >
-            {t.label}
-            {active === t.key && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-[3px] bg-[#1F7A8C] rounded-full" />
-            )}
-          </button>
-        ))}
+        {visibleTabs.map((t) => {
+          const m = tabMeta[t.key];
+          const isActive = active === t.key;
+          return (
+            <button
+              key={t.key}
+              onClick={() => setActive(t.key)}
+              className={`flex-1 min-w-[110px] flex items-center justify-center gap-2 py-4 sm:py-5 text-xs sm:text-sm font-bold transition-all relative ${isActive ? "text-[#1F7A8C]" : "text-gray-400 hover:text-gray-600"}`}
+            >
+              <m.icon size={16} />
+              {m.label}
+              {isActive && <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-[3px] bg-[#1F7A8C] rounded-full" />}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Tab Content */}
-      <div className="p-4 sm:p-6">
+      {/* Content */}
+      <div className="p-4 sm:p-7">
         {/* Specs */}
         {active === "specs" && hasSpecs && (
-          <div className="space-y-0 rounded-xl overflow-hidden">
-            {specLabels.map(([key, label], i) =>
+          <div className="rounded-2xl overflow-hidden border border-gray-100">
+            {specLabels.map(([key, label, emoji], i) =>
               specs[key] ? (
-                <div key={key} className={`flex text-xs sm:text-sm px-3 sm:px-4 py-3 sm:py-3.5 ${i % 2 === 0 ? "bg-[#f0f9fa]" : "bg-white"}`}>
-                  <span className="text-gray-400 w-28 sm:w-36 shrink-0 font-medium">{label}</span>
-                  <span className="text-gray-800 flex-1 min-w-0 break-words font-medium">{specs[key]}</span>
+                <div key={key} className={`flex items-center text-xs sm:text-sm px-4 sm:px-5 py-3.5 sm:py-4 gap-3 ${i % 2 === 0 ? "bg-[#f8fafb]" : "bg-white"}`}>
+                  <span className="text-sm">{emoji}</span>
+                  <span className="text-gray-400 w-28 sm:w-36 shrink-0 font-semibold">{label}</span>
+                  <span className="text-gray-800 flex-1 min-w-0 break-words font-semibold">{specs[key]}</span>
                 </div>
               ) : null
             )}
@@ -78,27 +86,25 @@ export default function ProductDetails({ installment, description, specs }: Prod
           return (
             <div>
               {title && (
-                <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[#1F7A8C]/10">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#1F7A8C]/15 to-[#1F7A8C]/5 flex items-center justify-center">
+                <div className="flex items-center gap-3 mb-5 pb-4 border-b border-gray-100">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1F7A8C]/12 to-[#1F7A8C]/5 flex items-center justify-center">
                     <IoDocumentTextOutline size={18} className="text-[#1F7A8C]" />
                   </div>
-                  <h3 className="text-sm sm:text-base font-bold text-gray-800">{title}</h3>
+                  <h3 className="text-sm sm:text-base font-black text-gray-800">{title}</h3>
                 </div>
               )}
               {items.length > 0 && (
                 <div className="flex flex-col gap-2">
                   {items.map((line, i) => (
-                    <div key={i} className={`flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl ${i % 2 === 0 ? "bg-[#f0f9fa]" : "bg-white"}`}>
+                    <div key={i} className={`flex items-center gap-3 px-4 py-3 sm:py-3.5 rounded-xl ${i % 2 === 0 ? "bg-[#f8fafb]" : "bg-white"}`}>
                       <IoCheckmarkCircle size={16} className="text-[#1F7A8C] shrink-0" />
                       <span className="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">{line.replace(/^[•\-\*]\s*/, "")}</span>
                     </div>
                   ))}
                 </div>
               )}
-              <div className="mt-4 bg-amber-50 border border-amber-100 rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-center">
-                <p className="text-[10px] sm:text-xs font-bold text-amber-700">
-                  ⚠️ عدم استيفاء أي من الشروط أعلاه قد يؤدي إلى رفض الطلب
-                </p>
+              <div className="mt-5 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 text-center">
+                <p className="text-[10px] sm:text-xs font-bold text-amber-700">⚠️ عدم استيفاء أي من الشروط أعلاه قد يؤدي إلى رفض الطلب</p>
               </div>
             </div>
           );
@@ -106,13 +112,13 @@ export default function ProductDetails({ installment, description, specs }: Prod
 
         {/* Installment */}
         {active === "installment" && installment?.available && (
-          <div className="space-y-4">
-            <div className="bg-[#7CC043]/10 rounded-xl p-3.5 sm:p-4">
-              <p className="text-xs sm:text-sm font-semibold text-[#5a9030]">
-                احصل عليه بأقساط شهرية
-                {installment.downPayment ? ` تبدأ بدفعة ${fmt(installment.downPayment)} ر.س والباقي أقساط` : ""}
+          <div className="space-y-5">
+            <div className="bg-gradient-to-l from-[#f0fbe4] to-[#f7fdf0] rounded-2xl p-5 border border-[#7CC043]/10">
+              <p className="text-sm sm:text-base font-bold text-[#3d6b1a]">
+                احصل عليه بأقساط شهرية مريحة
+                {installment.downPayment ? ` • مقدم ${fmt(installment.downPayment)} ر.س` : ""}
               </p>
-              {installment.note && <p className="text-[10px] sm:text-xs text-[#7CC043] mt-1.5">{installment.note}</p>}
+              {installment.note && <p className="text-xs text-[#7CC043] mt-2">{installment.note}</p>}
             </div>
             {installment.policy && (
               <div className="text-center py-2">
@@ -124,8 +130,8 @@ export default function ProductDetails({ installment, description, specs }: Prod
                 <p className="text-xs sm:text-sm font-bold text-gray-700 mb-3">شروط التقديم</p>
                 <div className="flex flex-col gap-2.5">
                   {installment.conditions.map((c, i) => (
-                    <div key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-600">
-                      <IoCheckmarkCircle size={15} className="text-[#1F7A8C] shrink-0 mt-0.5" />
+                    <div key={i} className="flex items-start gap-3 text-xs sm:text-sm text-gray-600 bg-gray-50 rounded-xl px-4 py-3">
+                      <IoCheckmarkCircle size={16} className="text-[#1F7A8C] shrink-0 mt-0.5" />
                       <span>{c}</span>
                     </div>
                   ))}
