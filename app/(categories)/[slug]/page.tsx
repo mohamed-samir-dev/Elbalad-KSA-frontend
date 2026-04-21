@@ -5,7 +5,7 @@ import CategoryPageClient from "./CategoryPageClient";
 export const dynamic = "force-dynamic";
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
-const SITE_URL = "http://al-bilad-ksa.com";
+const SITE_URL = "https://albilaad-ksa.com";
 
 async function getCompany() {
   try {

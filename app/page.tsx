@@ -6,7 +6,7 @@ import ShopByCategory from "./components/ShopByCategory";
 export const dynamic = "force-dynamic";
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://al-bilad-ksa.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://albilaad-ksa.com";
 
 async function getCompany() {
   try {

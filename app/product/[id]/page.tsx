@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ProductPageClient from "./ProductPageClient";
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
-const SITE_URL = "http://al-bilad-ksa.com";
+const SITE_URL = "https://albilaad-ksa.com";
 
 async function getProduct(id: string) {
   try {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import AboutClient from "./AboutClient";
 
-const SITE_URL = "http://al-bilad-ksa.com";
+const SITE_URL = "https://albilaad-ksa.com";
 
 export const metadata: Metadata = {
   title: "عن مؤسسة البلاد الحديثة للإلكترونيات",

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ReturnPolicyClient from "./ReturnPolicyClient";
 
-const SITE_URL = "http://al-bilad-ksa.com";
+const SITE_URL = "https://albilaad-ksa.com";
 
 export const metadata: Metadata = {
   title: "سياسة الاستبدال والاسترجاع",
