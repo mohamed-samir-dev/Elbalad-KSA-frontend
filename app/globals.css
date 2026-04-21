@@ -131,6 +131,31 @@ body.checkout-page {
   }
 }
 
+/* Product Card V3 - Premium */
+.product-card-v3 {
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid rgba(31, 122, 140, 0.07);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (min-width: 640px) {
+  .product-card-v3 {
+    border-radius: 22px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07), 0 1px 6px rgba(0,0,0,0.04);
+  }
+}
+@media (hover: hover) {
+  .product-card-v3:hover {
+    box-shadow: 0 14px 44px rgba(31, 122, 140, 0.18), 0 4px 14px rgba(0,0,0,0.07);
+    transform: translateY(-6px);
+    border-color: rgba(31, 122, 140, 0.18);
+  }
+  .product-card-v3:hover .cart-btn-v2 {
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.5);
+  }
+}
+
 /* Cart Button V2 */
 .cart-btn-v2 {
   position: relative;
