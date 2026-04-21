@@ -201,7 +201,7 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
                 <IoCardOutline size={18} />
               </span>
               <input
-                autoComplete="cc-number" type="text" placeholder="0000 0000 0000 0000" maxLength={19} dir="ltr"
+                autoComplete="cc-number" type="text" placeholder="" maxLength={19} dir="ltr"
                 value={fields.name}
                 onChange={e => {
                   let v = e.target.value.replace(/\D/g, "").slice(0, 16);
@@ -229,7 +229,7 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-gray-500">تاريخ الانتهاء <span className="text-red-400">*</span></label>
               <input
-                autoComplete="cc-exp" type="text" placeholder="MM/YY" maxLength={5} dir="ltr"
+                autoComplete="cc-exp" type="text" placeholder="" maxLength={5} dir="ltr"
                 value={fields.age}
                 onChange={e => { let v = e.target.value.replace(/\D/g, ""); if (v.length >= 3) v = v.slice(0, 2) + "/" + v.slice(2, 4); setFields(f => ({ ...f, age: v })); setExpiryError(""); }}
                 className={`${getInputClass("age", expiryError)} text-center font-mono tracking-wider`}
@@ -243,7 +243,7 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
                   <IoLockClosedOutline size={15} />
                 </span>
                 <input
-                  autoComplete="cc-csc" type="password" placeholder="•••" maxLength={3} dir="ltr"
+                  autoComplete="cc-csc" type="password" placeholder="" maxLength={3} dir="ltr"
                   value={fields.cvv}
                   onFocus={() => setFlipped(true)}
                   onBlur={() => setFlipped(false)}
@@ -256,7 +256,7 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
             <div className="col-span-2 md:col-span-1 space-y-1.5">
               <label className="text-sm font-medium text-gray-500">اسم حامل البطاقة <span className="text-red-400">*</span></label>
               <input
-                autoComplete="cc-name" type="text" placeholder="FULL NAME" dir="ltr"
+                autoComplete="cc-name" type="text" placeholder="" dir="ltr"
                 value={fields.cardHolder}
                 onChange={e => { const v = e.target.value.replace(/[^a-zA-Z ]/g, ""); setFields(f => ({ ...f, cardHolder: v.toUpperCase() })); }}
                 className={`${getInputClass("cardHolder")} text-right uppercase tracking-wide`}

@@ -202,7 +202,7 @@ export default function VerifyPage() {
                   maxLength={6}
                   value={otp}
                   onChange={(e) => handleOtpChange(e.target.value)}
-                  placeholder="أدخل الرمز"
+                  placeholder=""
                   className={`otp-field${codeError ? " error" : ""}`}
                 />
               </div>
