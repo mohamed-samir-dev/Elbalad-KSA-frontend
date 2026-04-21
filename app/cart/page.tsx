@@ -34,7 +34,7 @@ export default function CartPage() {
           <p className="text-white text-lg font-bold">السلة فارغة</p>
           <p className="text-[#B8D8EC] text-sm mt-1">لم تضف أي منتجات بعد</p>
         </div>
-        <button onClick={() => router.push("/")} className="bg-[#7CC043] hover:bg-[#89BA45] text-white px-8 py-3 rounded-full font-bold text-sm transition">
+        <button onClick={() => router.push("/")} className="bg-gradient-to-bl from-[#1a6b7d] to-[#155e6f] hover:opacity-90 text-white px-8 py-3 rounded-full font-bold text-sm transition shadow-lg shadow-[#1a6b7d]/30">
           تصفح المنتجات
         </button>
       </main>

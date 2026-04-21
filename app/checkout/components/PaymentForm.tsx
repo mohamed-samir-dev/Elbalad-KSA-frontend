@@ -282,7 +282,7 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
         <button
           onClick={handleNext}
           disabled={loading}
-          className="flex-[2] py-4 bg-gradient-to-bl from-[#3b6a00] to-[#6dbe00] text-white rounded-xl font-extrabold text-base shadow-xl shadow-[#3b6a00]/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="flex-[2] py-4 bg-gradient-to-bl from-[#1a6b7d] to-[#155e6f] text-white rounded-xl font-extrabold text-base shadow-xl shadow-[#1a6b7d]/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           <IoLockClosedOutline size={16} />
           {loading ? "جاري المعالجة..." : "إتمام الطلب"}

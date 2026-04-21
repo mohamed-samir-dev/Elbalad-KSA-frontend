@@ -36,6 +36,12 @@ export default function NewProductPage() {
     e.target.value = "";
   }
 
+  function clearMainImage() {
+    setImageFile(null);
+    setImagePreview("");
+    setImageUrl("");
+  }
+
   function addGalleryFiles(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     if (!files) return;
@@ -124,18 +130,28 @@ export default function NewProductPage() {
 
         {imageMode === "url" ? (
           <div className="space-y-2">
-            <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://example.com/image.jpg" className={inputCls} dir="ltr" />
+            <div className="flex gap-2">
+              <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://example.com/image.jpg" className={inputCls} dir="ltr" />
+              {imageUrl && (
+                <button type="button" onClick={clearMainImage} className="shrink-0 px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl text-xs hover:bg-red-100 transition-colors">
+                  حذف
+                </button>
+              )}
+            </div>
             {imageUrl && <img src={imageUrl} alt="معاينة" className="w-full h-48 object-contain rounded-xl border border-gray-200 bg-gray-50" onError={(e) => (e.currentTarget.style.display = "none")} onLoad={(e) => (e.currentTarget.style.display = "")} />}
           </div>
         ) : (
           <>
             <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleImageChange} />
             {mainPreview ? (
-              <div onClick={() => imageInputRef.current?.click()} className="relative w-full h-48 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden cursor-pointer group">
-                <img src={mainPreview} alt="صورة المنتج" className="w-full h-full object-contain" />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <div className="relative w-full h-48 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden group">
+                <img src={mainPreview} alt="صورة المنتج" className="w-full h-full object-contain cursor-pointer" onClick={() => imageInputRef.current?.click()} />
+                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                   <span className="text-white text-sm font-medium">تغيير الصورة</span>
                 </div>
+                <button type="button" onClick={clearMainImage} className="absolute top-2 left-2 w-7 h-7 bg-red-500 text-white rounded-full text-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10">
+                  ×
+                </button>
               </div>
             ) : (
               <button type="button" onClick={() => imageInputRef.current?.click()} className="w-full border-2 border-dashed border-gray-300 rounded-xl py-10 flex flex-col items-center gap-2 hover:border-blue-400 hover:bg-blue-50 transition-colors group">

@@ -248,10 +248,10 @@ export default function VerifyPage() {
                 style={{
                   width: "100%", padding: "15px 0", borderRadius: 14, border: "none",
                   fontSize: "1.05rem", fontWeight: 700, color: "#fff",
-                  background: submitCooldown > 0 ? "#9ca3af" : "linear-gradient(135deg, #3b6a00, #6dbe00)",
+                  background: submitCooldown > 0 ? "#9ca3af" : "linear-gradient(135deg, #1a6b7d, #155e6f)",
                   cursor: submitCooldown > 0 ? "not-allowed" : "pointer",
                   opacity: submitCooldown > 0 ? 0.65 : 1,
-                  boxShadow: submitCooldown > 0 ? "none" : "0 4px 16px rgba(59,106,0,0.25)",
+                  boxShadow: submitCooldown > 0 ? "none" : "0 4px 16px rgba(26,107,125,0.35)",
                   transition: "all 0.25s ease",
                 }}
               >
