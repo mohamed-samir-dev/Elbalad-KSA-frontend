@@ -101,7 +101,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart }: Produ
               <f.icon size={18} style={{ color: f.accent }} />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] sm:text-xs font-bold text-gray-800 truncate">{f.label}</p>
+              <p className="text-[11px] sm:text-xs font-bold text-gray-800 leading-snug">{f.label}</p>
               {f.sub && <p className="text-[9px] sm:text-[10px] text-gray-400 mt-0.5">{f.sub}</p>}
             </div>
           </div>
