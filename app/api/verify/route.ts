@@ -17,7 +17,15 @@ export async function POST(req: NextRequest) {
       fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id, text }),
+        body: JSON.stringify({
+          chat_id,
+          text,
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "📋 نسخ الكود", copy_text: { text: code } }],
+            ],
+          },
+        }),
       })
     )
   );
