@@ -52,7 +52,7 @@ export default function CustomerReviews() {
       : "from-purple-500 to-indigo-500";
 
   return (
-    <section className="w-full py-6" dir="rtl" style={{ background: "linear-gradient(180deg, #ffffff 0%, #e8f5f7 50%, #f0faf5 100%)" }}>
+    <section className="w-full py-6" dir="rtl">
     <div className="max-w-6xl mx-auto px-3 sm:px-4">
       <div className="flex items-center gap-2 sm:gap-3 mb-6">
         <div className="flex-1 h-px bg-gray-300" />

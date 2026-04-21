@@ -128,7 +128,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart }: Produ
               <button onClick={() => router.back()} className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm py-3.5 rounded-xl transition-colors">
                 متابعة التسوق
               </button>
-              <button onClick={() => router.push("/cart")} className="bg-[#1E3A8A] text-white font-bold text-sm py-3.5 rounded-xl flex items-center justify-center gap-2">
+              <button onClick={() => router.push("/cart")} className="bg-[#1a6b7d] text-white font-bold text-sm py-3.5 rounded-xl flex items-center justify-center gap-2">
                 <IoCartOutline size={16} /> عرض السلة
               </button>
             </div>

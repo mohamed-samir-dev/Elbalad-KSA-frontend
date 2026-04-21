@@ -36,7 +36,7 @@ export default function MobileMenu({ items, isOpen, onClose }: MobileMenuProps) 
         dir="rtl"
       >
         <div className="py-2">
-          <div className="px-4 py-4 text-base font-bold text-white border-b border-[#1F7A8C]" style={{ background: 'linear-gradient(135deg, #1E3A8A 0%, #172554 100%)' }}>
+          <div className="px-4 py-4 text-base font-bold text-white border-b border-[#1F7A8C]" style={{ background: '#1a6b7d' }}>
             أقسام المتجر
           </div>
           {items.map((item) => (

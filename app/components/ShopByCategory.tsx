@@ -73,8 +73,8 @@ export default async function ShopByCategory() {
   }));
 
   return (
-    <div className="w-full px-3 sm:px-6 py-4" dir="rtl" style={{ background: "linear-gradient(135deg, #f0faf5 0%, #e0f2f4 50%, #f5fbe8 100%)" }}>
-    <section className="max-w-6xl mx-auto rounded-2xl py-10 shadow-md overflow-hidden bg-white/80 backdrop-blur-sm" dir="rtl">
+    <div className="w-full px-3 sm:px-6 py-4" dir="rtl">
+    <section className="max-w-6xl mx-auto rounded-2xl py-10 shadow-md overflow-hidden bg-white/60 backdrop-blur-sm" dir="rtl">
       <div className="px-3 sm:px-4">
         <div className="flex items-center gap-3 mb-5">
           <div className="flex-1 h-px bg-[#6DBE00]" />

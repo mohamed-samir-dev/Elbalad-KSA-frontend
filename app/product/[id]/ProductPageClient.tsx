@@ -111,7 +111,7 @@ export default function ProductPageClient({ id, initialProduct }: { id: string; 
               <p className="text-base font-black text-red-600">{(product.salePrice ?? product.originalPrice ?? 0).toLocaleString("en-US")} <span className="text-xs font-bold">ر.س</span></p>
             </div>
             {!addedToCart ? (
-              <button onClick={() => { addItem(product); setAddedToCart(true); }} className="bg-gradient-to-l from-[#1E3A8A] to-[#172554] text-white font-bold text-sm px-7 py-3 rounded-xl shadow-lg shadow-blue-900/30 active:scale-95 transition-transform">
+              <button onClick={() => { addItem(product); setAddedToCart(true); }} className="bg-gradient-to-l from-[#1a6b7d] to-[#155e6f] text-white font-bold text-sm px-7 py-3 rounded-xl shadow-lg shadow-[#1a6b7d]/30 active:scale-95 transition-transform">
                 أضف للسلة
               </button>
             ) : (
