@@ -6,7 +6,7 @@ const SITE_URL = "https://albilaad-ksa.com";
 
 async function getProduct(id: string) {
   try {
-    const r = await fetch(`${BACKEND}/api/products/${id}`, { next: { revalidate: 3600 } });
+    const r = await fetch(`${BACKEND}/api/products/${id}`, { next: { revalidate: 60 } });
     return r.ok ? r.json() : null;
   } catch {
     return null;

@@ -29,7 +29,8 @@ export default function ProductPageClient({ id, initialProduct }: { id: string; 
 
   const resolveImg = (src: string) =>
     src.startsWith("http") ? src : src.startsWith("/uploads") ? src : `${API}${src}`;
-  const allImages = (product.images?.length ? product.images : product.image ? [product.image] : []).map(resolveImg);
+  const merged = [...(product.images || []), ...(product.image ? [product.image] : [])];
+  const allImages = [...new Set(merged)].map(resolveImg);
 
   const handleShare = async () => {
     try { await navigator.share({ title: product.name, url: window.location.href }); } catch {}
