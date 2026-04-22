@@ -6,7 +6,7 @@ import Link from "next/link";
 import ProductCard from "../../components/products/ProductCard";
 import type { Product } from "../../components/products/types";
 import { slugConfigs } from "../../lib/categoryConfig";
-import { IoShieldCheckmark, IoCarOutline, IoFlash, IoStar, IoGridOutline, IoChevronBack, IoChevronForward, IoHome } from "react-icons/io5";
+import { IoGridOutline, IoChevronBack, IoChevronForward, IoHome } from "react-icons/io5";
 
 function filterProducts(products: Product[], slug: string): Product[] {
   const config = slugConfigs[slug];
@@ -71,12 +71,7 @@ export default function CategoryPageClient({ slug }: { slug: string }) {
   const parentHref = config.parentHref ?? "/";
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
 
-  const features = [
-    { icon: IoShieldCheckmark, label: "ضمان معتمد", color: "#1F7A8C" },
-    { icon: IoCarOutline, label: "شحن سريع", color: "#0d4a5e" },
-    { icon: IoFlash, label: "تقسيط متاح", color: "#7CC043" },
-    { icon: IoStar, label: "منتجات أصلية", color: "#f59e0b" },
-  ];
+
 
   return (
     <>
@@ -172,19 +167,7 @@ export default function CategoryPageClient({ slug }: { slug: string }) {
           </div>
         </div>
 
-        {/* Feature Strip */}
-        <div className="relative z-10 -mt-3 sm:-mt-4 mb-4 sm:mb-6">
-          <div className="max-w-6xl mx-auto px-3 sm:px-4">
-            <div className="feature-strip-cat flex gap-2 sm:gap-3 overflow-x-auto pb-1">
-              {features.map((f, i) => (
-                <div key={i} className="slide-up flex items-center gap-2 bg-white px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl shadow-sm border border-gray-100 shrink-0" style={{ animationDelay: `${0.05 * i}s` }}>
-                  <f.icon size={16} style={{ color: f.color }} className="shrink-0" />
-                  <span className="text-[10px] sm:text-xs font-bold text-gray-700 whitespace-nowrap">{f.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+
 
         {/* Products Grid */}
         <div className="max-w-6xl mx-auto px-3 sm:px-4 pb-8 sm:pb-12">

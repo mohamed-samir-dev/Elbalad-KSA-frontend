@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProductCard from "../../components/products/ProductCard";
 import type { Product } from "../../components/products/types";
-import { IoShieldCheckmark, IoCarOutline, IoFlash, IoStar, IoGridOutline, IoChevronBack, IoChevronForward, IoHome } from "react-icons/io5";
+import { IoGridOutline, IoChevronBack, IoChevronForward, IoHome } from "react-icons/io5";
 
 export default function SmartphonesClient() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -49,12 +49,7 @@ export default function SmartphonesClient() {
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const label = "الهواتف الذكية";
 
-  const features = [
-    { icon: IoShieldCheckmark, label: "ضمان معتمد", color: "#1F7A8C" },
-    { icon: IoCarOutline, label: "شحن سريع", color: "#0d4a5e" },
-    { icon: IoFlash, label: "تقسيط متاح", color: "#7CC043" },
-    { icon: IoStar, label: "منتجات أصلية", color: "#f59e0b" },
-  ];
+
 
   return (
     <>
@@ -96,18 +91,7 @@ export default function SmartphonesClient() {
           </div>
           <div className="absolute bottom-0 left-0 right-0"><svg viewBox="0 0 1440 50" fill="none" className="w-full" preserveAspectRatio="none"><path d="M0,25 C360,50 720,0 1080,25 C1260,37 1380,30 1440,25 L1440,50 L0,50 Z" fill="#f5f7f9" /></svg></div>
         </div>
-        <div className="relative z-10 -mt-3 sm:-mt-4 mb-4 sm:mb-6">
-          <div className="max-w-6xl mx-auto px-3 sm:px-4">
-            <div className="feature-strip-cat flex gap-2 sm:gap-3 overflow-x-auto pb-1">
-              {features.map((f, i) => (
-                <div key={i} className="slide-up flex items-center gap-2 bg-white px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl shadow-sm border border-gray-100 shrink-0" style={{ animationDelay: `${0.05 * i}s` }}>
-                  <f.icon size={16} style={{ color: f.color }} className="shrink-0" />
-                  <span className="text-[10px] sm:text-xs font-bold text-gray-700 whitespace-nowrap">{f.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+
         <div className="max-w-6xl mx-auto px-3 sm:px-4 pb-8 sm:pb-12">
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
