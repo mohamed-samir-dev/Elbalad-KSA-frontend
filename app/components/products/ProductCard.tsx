@@ -103,7 +103,7 @@ function ProductCard({ product, priority = false }: { product: Product; priority
           </h3>
 
           {/* Tags */}
-          {tags.length > 0 && (
+          {/* {tags.length > 0 && (
             <div className="flex gap-1 sm:gap-1.5 flex-wrap">
               {tags.map((t, i) => (
                 <span key={i} className="text-[8px] sm:text-[10px] font-semibold text-[#1F7A8C] bg-[#1F7A8C]/8 px-1.5 sm:px-2 py-0.5 rounded-md">
@@ -111,7 +111,7 @@ function ProductCard({ product, priority = false }: { product: Product; priority
                 </span>
               ))}
             </div>
-          )}
+          )} */}
 
           {/* Price */}
           <div className="mt-auto pt-1">
@@ -145,7 +145,7 @@ function ProductCard({ product, priority = false }: { product: Product; priority
           )}
 
           {/* Mini Features */}
-          <div className="flex items-center gap-2 sm:gap-3 pt-0.5">
+          {/* <div className="flex items-center gap-2 sm:gap-3 pt-0.5">
             {freeDelivery && (
               <div className="flex items-center gap-0.5 sm:gap-1">
                 <IoCarOutline size={11} className="text-[#1F7A8C] shrink-0" />
@@ -156,7 +156,7 @@ function ProductCard({ product, priority = false }: { product: Product; priority
               <IoShieldCheckmark size={11} className="text-[#1F7A8C] shrink-0" />
               <span className="text-[7px] sm:text-[9px] font-semibold text-gray-500">ضمان</span>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Cart Button */}
