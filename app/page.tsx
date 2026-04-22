@@ -4,8 +4,7 @@ import CustomerReviews from "./components/CustomerReviews";
 import ShopByCategory from "./components/ShopByCategory";
 
 export const dynamic = "force-dynamic";
-ht
-const BACKEND = process.env.BACKEND_URL || "tp://localhost:5000";
+const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://albilaad-ksa.com";
 
 async function getCompany() {
