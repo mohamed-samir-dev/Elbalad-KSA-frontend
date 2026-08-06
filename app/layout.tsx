@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { Tajawal } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
 import Footer from "./components/Footer";
+
+const tajawal = Tajawal({ subsets: ["arabic"], weight: ["400", "500", "700", "800"], display: "swap" });
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 const SITE_URL = "https://albilaad-ksa.com";
@@ -97,7 +100,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className="antialiased" suppressHydrationWarning>
+      <body className={`antialiased ${tajawal.className}`} suppressHydrationWarning>
         <ClientLayout footer={<Footer />}>{children}</ClientLayout>
       </body>
     </html>

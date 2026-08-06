@@ -21,6 +21,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+body.checkout-page {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
 body.print-page,
 body.contract-page {
   background: #ffffff !important;

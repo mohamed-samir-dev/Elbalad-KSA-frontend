@@ -3,10 +3,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IoCartOutline, IoChevronBack } from "react-icons/io5";
+import { AnimatePresence, motion } from "framer-motion";
+import { ShoppingCart, ArrowLeft, ChevronRight } from "lucide-react";
 import { useCartStore } from "../store/cartStore";
 import type { CustomerInfo } from "../store/cartStore";
-import CartItem from "./components/CartItem";
+import CheckoutStepper from "../components/checkout/CheckoutStepper";
+import CartItemCard from "../components/checkout/CartItemCard";
+import OrderSummaryCard from "../components/checkout/OrderSummaryCard";
+import TrustBadges from "../components/checkout/TrustBadges";
 import CustomerForm from "./components/CustomerForm";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
@@ -20,79 +24,117 @@ export default function CartPage() {
 
   const total = mounted ? totalPrice() : 0;
   const count = mounted ? totalItems() : 0;
-  const installmentMonths = mounted ? Math.max(...items.map((i) => i.product.installment?.months ?? 0)) || undefined : undefined;
+  const installmentMonths = mounted
+    ? Math.max(...items.map((i) => i.product.installment?.months ?? 0)) || undefined
+    : undefined;
 
   if (!mounted) return null;
 
-  if (items.length === 0)
+  if (items.length === 0) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center gap-5 px-4 bg-white" dir="rtl">
-        <div className="w-20 h-20 bg-[#1F6F8B]/40 rounded-full flex items-center justify-center">
-          <IoCartOutline size={36} className="text-[#B8D8EC]" />
+      <main className="min-h-screen bg-[#f8f9fa]" dir="rtl">
+        <CheckoutStepper currentStep={1} />
+        <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 gap-6">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 200 }}
+            className="w-24 h-24 bg-[#1a6b7d]/10 rounded-full flex items-center justify-center"
+          >
+            <ShoppingCart size={40} className="text-[#1a6b7d]" />
+          </motion.div>
+          <motion.div
+            initial={{ y: 16, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.15 }}
+            className="text-center"
+          >
+            <h2 className="text-xl font-extrabold text-gray-800">السلة فارغة</h2>
+            <p className="text-gray-500 text-sm mt-1">لم تضف أي منتجات بعد</p>
+          </motion.div>
+          <motion.div initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.25 }}>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 bg-gradient-to-bl from-[#1a6b7d] to-[#155e6f] text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg shadow-[#1a6b7d]/25 hover:scale-[1.02] transition-transform"
+            >
+              <ArrowLeft size={16} />
+              تصفح المنتجات
+            </Link>
+          </motion.div>
         </div>
-        <div className="text-center">
-          <p className="text-white text-lg font-bold">السلة فارغة</p>
-          <p className="text-[#B8D8EC] text-sm mt-1">لم تضف أي منتجات بعد</p>
-        </div>
-        <button onClick={() => router.push("/")} className="bg-gradient-to-bl from-[#1a6b7d] to-[#155e6f] hover:opacity-90 text-white px-8 py-3 rounded-full font-bold text-sm transition shadow-lg shadow-[#1a6b7d]/30">
-          تصفح المنتجات
-        </button>
       </main>
     );
+  }
 
   return (
-    <main className="min-h-screen pb-24 bg-[#f8f9fa]" dir="rtl">
+    <main className="min-h-screen bg-[#f8f9fa]" dir="rtl">
       <style>{`body { background-color: #f8f9fa; }`}</style>
-      <div className="sticky top-0 z-10 border-b border-gray-200 bg-white">
-        <div className="max-w-4xl mx-auto px-2 sm:px-4 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="w-8 h-8 bg-[#0F4C6E]/20 rounded-full flex items-center justify-center hover:bg-[#0F4C6E]/40 transition">
-              <IoChevronBack size={18} className="text-[#0F4C6E] rotate-180" />
-            </Link>
-            <div>
-              <h1 className="text-base font-extrabold text-[#0F4C6E]">سلة التسوق</h1>
-              <p className="text-xs text-[#0F4C6E]/70">{count} منتج</p>
-            </div>
-          </div>
+      <CheckoutStepper currentStep={1} />
+
+      {/* Page header */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-2">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/" className="hover:text-[#1a6b7d] transition-colors">الرئيسية</Link>
+          <ChevronRight size={14} className="text-gray-300" />
+          <span className="text-gray-800 font-semibold">سلة التسوق</span>
+          <span className="mr-auto bg-[#1a6b7d]/10 text-[#1a6b7d] text-xs font-bold px-2.5 py-1 rounded-full">
+            {count} منتج
+          </span>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-2 sm:px-4 pt-4 space-y-3">
-        {items.map(({ product, qty }) => (
-          <CartItem
-            key={product._id}
-            product={product}
-            qty={qty}
-            onUpdateQty={updateQty}
-            onRemove={removeItem}
-          />
-        ))}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-24 pt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <div className="bg-gray-800 rounded-2xl p-3 sm:p-4 space-y-2.5">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-[#B8D8EC]">المجموع</span>
-            <span className="text-white font-bold">{fmt(total)} ر.س</span>
+          {/* LEFT — Cart items + Customer form */}
+          <div className="lg:col-span-2 space-y-4">
+            <AnimatePresence>
+              {items.map(({ product, qty }) => (
+                <CartItemCard
+                  key={product._id}
+                  product={product}
+                  qty={qty}
+                  onUpdateQty={updateQty}
+                  onRemove={removeItem}
+                />
+              ))}
+            </AnimatePresence>
+
+            <CustomerForm
+              total={total}
+              itemCount={count}
+              initialData={customer}
+              installmentMonths={installmentMonths}
+              onSubmit={(info: CustomerInfo) => {
+                setCustomer(info);
+                router.push("/checkout");
+              }}
+            />
           </div>
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-[#B8D8EC]">التوصيل</span>
-            <span className="text-[#7CC043] font-bold text-xs">مجاني</span>
-          </div>
-          <div className="border-t border-[#1F6F8B] pt-2.5 flex justify-between items-center">
-            <span className="text-white font-bold text-sm">الإجمالي</span>
-            <span className="text-white text-lg font-extrabold">{fmt(total)} <span className="text-xs font-medium text-[#B8D8EC]">ر.س</span></span>
+
+          {/* RIGHT — Sticky order summary */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-4 space-y-3">
+              <OrderSummaryCard
+                total={total}
+                itemCount={count}
+                cta={
+                  <div className="space-y-3">
+                    <div className="text-xs text-gray-400 text-center">
+                      أكمل بيانات الشحن أدناه ثم اضغط إتمام الطلب
+                    </div>
+                    <TrustBadges />
+                  </div>
+                }
+              />
+
+              {/* Free shipping notice */}
+              <div className="bg-[#7CC043]/10 border border-[#7CC043]/30 rounded-xl px-4 py-3 text-center">
+                <p className="text-xs font-semibold text-[#3b6a00]">🚚 شحن مجاني على جميع الطلبات</p>
+              </div>
+            </div>
           </div>
         </div>
-
-        <CustomerForm
-          total={total}
-          itemCount={count}
-          initialData={customer}
-          installmentMonths={installmentMonths}
-          onSubmit={(info: CustomerInfo) => {
-            setCustomer(info);
-            router.push("/checkout");
-          }}
-        />
       </div>
     </main>
   );
