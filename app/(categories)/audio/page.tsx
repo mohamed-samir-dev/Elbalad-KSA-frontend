@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import AudioClient from "./AudioClient";
+import { getCachedProducts } from "../../lib/products-cache";
 
-export const dynamic = "force-dynamic";
+export const revalidate = false;
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 const SITE_URL = "https://albilaad-ksa.com";
@@ -41,6 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function AudioPage() {
-  return <AudioClient />;
+export default async function AudioPage() {
+  const products = await getCachedProducts();
+  return <AudioClient initialProducts={products} />;
 }

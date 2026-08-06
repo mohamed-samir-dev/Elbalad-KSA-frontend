@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo, memo } from "react";
+import { useMemo, memo } from "react";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
 import type { Product } from "./types";
@@ -97,33 +97,15 @@ const CategoryRow = memo(function CategoryRow({ category, items, isFirst }: { ca
 type HomeSettings = { category: string; subCategory: string; showInHome: boolean; order: number };
 type HomeConfig = { settings: HomeSettings[]; max: number };
 
-export default function ProductGrid() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [homeConfig, setHomeConfig] = useState<HomeConfig | null>(null);
-  const [bannerMap, setBannerMap] = useState<Record<string, string[]>>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    Promise.all([
-      fetch(`/api/products`).then((r) => r.json()),
-      fetch("/api/sub-categories-home").then((r) => r.json()).catch(() => ({ settings: [], max: 4 })),
-    ])
-      .then(([prods, config]) => {
-        setProducts(prods);
-        setHomeConfig(Array.isArray(config) ? { settings: config, max: 4 } : config);
-        // Fetch all category banners in one bulk call
-        const cats = [...new Set((prods as Product[]).map((p) => p.category).filter(Boolean))];
-        if (cats.length) {
-          fetch(`/api/admin/category-banners-bulk?categories=${encodeURIComponent(cats.join(","))}`)
-            .then((r) => r.json())
-            .then((data) => { if (data && typeof data === "object") setBannerMap(data); })
-            .catch(() => {});
-        }
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
+export default function ProductGrid({
+  products,
+  homeConfig,
+  bannerMap,
+}: {
+  products: Product[];
+  homeConfig: HomeConfig | null;
+  bannerMap: Record<string, string[]>;
+}) {
   const grouped = useMemo(() => {
     const map: Record<string, Product[]> = {};
     products.forEach((p) => {
@@ -172,33 +154,6 @@ export default function ProductGrid() {
     return [...orderedCats, ...unconfigured];
   }, [grouped, homeConfig]);
 
-  if (loading) return (
-    <section className="w-full max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
-      {[1, 2, 3].map((g) => (
-        <div key={g} className="mb-10">
-          <div className="flex items-center gap-3 mb-6" dir="rtl">
-            <div className="w-1.5 h-7 rounded-full bg-gray-200 animate-pulse" />
-            <div className="h-6 w-28 bg-gray-200 animate-pulse rounded-lg" />
-            <div className="flex-1 h-px bg-gray-200" />
-            <div className="h-8 w-20 bg-gray-200 animate-pulse rounded-full" />
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100/80 overflow-hidden">
-                <div className="w-full aspect-square bg-gradient-to-b from-gray-100 to-gray-50 animate-pulse" />
-                <div className="h-[2px] bg-gray-100" />
-                <div className="p-3 space-y-2.5">
-                  <div className="h-3.5 bg-gray-200 animate-pulse rounded-md w-4/5" />
-                  <div className="h-5 bg-gray-200 animate-pulse rounded-md w-2/5" />
-                </div>
-                <div className="px-3 pb-3"><div className="h-10 bg-gray-100 animate-pulse rounded-xl" /></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </section>
-  );
   if (!products.length) return <p className="text-center text-gray-400 py-10">لا توجد منتجات حالياً</p>;
 
   return (

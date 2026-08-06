@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ProductCard from "../../components/products/ProductCard";
@@ -25,44 +25,32 @@ function filterProducts(products: Product[], slug: string): Product[] {
   });
 }
 
-export default function CategoryPageClient({ slug }: { slug: string }) {
+export default function CategoryPageClient({ slug, initialProducts }: { slug: string; initialProducts: Product[] }) {
   const config = slugConfigs[slug];
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const ITEMS_PER_PAGE = 12;
 
-  useEffect(() => {
-    if (!config) return;
-    const brand = config.filters.brand ?? "";
-    const query = brand ? `?brand=${encodeURIComponent(brand)}` : "";
-    fetch(`/api/products${query}`)
-      .then((r) => r.json())
-      .then((data: Product[]) => {
-        const filtered = filterProducts(data, slug);
-        const parseStorage = (s?: string) => {
-          if (!s) return 0;
-          const n = parseFloat(s);
-          if (s.includes("تيرا") || s.toLowerCase().includes("tb")) return n * 1024;
-          return n || 0;
-        };
-        const colorOrder = (c?: string) => {
-          if (!c) return 99;
-          if (c.includes("برتقال") || c.toLowerCase().includes("orange")) return 0;
-          if (c.includes("سيلفر") || c.toLowerCase().includes("silver")) return 1;
-          if (c.includes("ازرق") || c.includes("أزرق") || c.toLowerCase().includes("blue")) return 2;
-          return 3;
-        };
-        const sorted = [...filtered].sort((a, b) => {
-          const storageDiff = parseStorage(a.storage) - parseStorage(b.storage);
-          if (storageDiff !== 0) return storageDiff;
-          return colorOrder(a.color) - colorOrder(b.color);
-        });
-        setProducts(sorted);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [slug, config]);
+  const products = useMemo(() => {
+    if (!config) return [];
+    const filtered = filterProducts(initialProducts, slug);
+    const parseStorage = (s?: string) => {
+      if (!s) return 0;
+      const n = parseFloat(s);
+      if (s.includes("تيرا") || s.toLowerCase().includes("tb")) return n * 1024;
+      return n || 0;
+    };
+    const colorOrder = (c?: string) => {
+      if (!c) return 99;
+      if (c.includes("برتقال") || c.toLowerCase().includes("orange")) return 0;
+      if (c.includes("سيلفر") || c.toLowerCase().includes("silver")) return 1;
+      if (c.includes("ازرق") || c.includes("أزرق") || c.toLowerCase().includes("blue")) return 2;
+      return 3;
+    };
+    return [...filtered].sort((a, b) => {
+      const storageDiff = parseStorage(a.storage) - parseStorage(b.storage);
+      return storageDiff !== 0 ? storageDiff : colorOrder(a.color) - colorOrder(b.color);
+    });
+  }, [initialProducts, slug, config]);
 
   if (!config) return notFound();
 
@@ -147,10 +135,10 @@ export default function CategoryPageClient({ slug }: { slug: string }) {
               <div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">{label}</h1>
                 <p className="text-sm sm:text-base text-white/60 mt-1.5">
-                  {loading ? "جاري تحميل المنتجات..." : `${products.length} منتج متوفر`}
+                  {`${products.length} منتج متوفر`}
                 </p>
               </div>
-              {!loading && products.length > 0 && (
+              {products.length > 0 && (
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2 border border-white/10 self-start sm:self-auto">
                   <IoGridOutline size={14} className="text-white/70" />
                   <span className="text-xs text-white/70 font-medium">صفحة {page} من {totalPages || 1}</span>
@@ -171,22 +159,7 @@ export default function CategoryPageClient({ slug }: { slug: string }) {
 
         {/* Products Grid */}
         <div className="max-w-6xl mx-auto px-3 sm:px-4 pb-8 sm:pb-12">
-          {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm">
-                  <div style={{ paddingBottom: '110%' }} className="bg-gradient-to-b from-gray-100 to-gray-50 animate-pulse" />
-                  <div className="p-4 space-y-2.5">
-                    <div className="h-3.5 bg-gray-100 rounded-full w-3/4 animate-pulse" />
-                    <div className="h-3 bg-gray-100 rounded-full w-1/2 animate-pulse" />
-                    <div className="flex gap-1.5 mt-1"><div className="h-5 w-12 bg-gray-100 rounded-md animate-pulse" /><div className="h-5 w-14 bg-gray-100 rounded-md animate-pulse" /></div>
-                    <div className="h-6 bg-gray-100 rounded-lg w-2/3 animate-pulse mt-2" />
-                    <div className="h-10 bg-gray-100 rounded-xl animate-pulse mt-3" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : !products.length ? (
+          {!products.length ? (
             <div className="flex flex-col items-center justify-center py-20 sm:py-28 gap-4 text-center">
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-[#1F7A8C]/10 to-[#1F7A8C]/5 flex items-center justify-center">
                 <span className="text-4xl sm:text-5xl">📦</span>

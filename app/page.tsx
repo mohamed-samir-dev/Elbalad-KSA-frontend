@@ -2,8 +2,9 @@ import { Banner } from "./components/banner";
 import { ProductGrid } from "./components/products";
 import CustomerReviews from "./components/CustomerReviews";
 import ShopByCategory from "./components/ShopByCategory";
+import { getCachedProducts } from "./lib/products-cache";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://albilaad-ksa.com";
 
@@ -16,8 +17,38 @@ async function getCompany() {
   }
 }
 
+async function getHomeConfig() {
+  try {
+    const r = await fetch(`${BACKEND}/api/sub-categories-home`, { next: { revalidate: 3600 } });
+    if (!r.ok) return { settings: [], max: 4 };
+    const data = await r.json();
+    return Array.isArray(data) ? { settings: data, max: 4 } : data;
+  } catch {
+    return { settings: [], max: 4 };
+  }
+}
+
+async function getBannerMap(categories: string[]) {
+  if (!categories.length) return {};
+  try {
+    const r = await fetch(
+      `${BACKEND}/api/admin/category-banners-bulk?categories=${encodeURIComponent(categories.join(","))}`,
+      { next: { revalidate: 3600 } }
+    );
+    return r.ok ? r.json() : {};
+  } catch {
+    return {};
+  }
+}
+
 export default async function Home() {
-  const c = await getCompany();
+  const [c, products, homeConfig] = await Promise.all([
+    getCompany(),
+    getCachedProducts(),
+    getHomeConfig(),
+  ]);
+  const categories = [...new Set((products as { category?: string }[]).map((p) => p.category).filter(Boolean))] as string[];
+  const bannerMap = await getBannerMap(categories);
   const siteName = c.nameAr || "مؤسسة البلاد الحديثة للإلكترونيات";
   const logoUrl = c.logo
     ? (c.logo.startsWith("http") ? c.logo : `${BACKEND}${c.logo}`)
@@ -83,7 +114,7 @@ export default async function Home() {
       <main className="min-h-screen" style={{ background: 'linear-gradient(180deg, #d4ece8 0%, #e2f3f0 20%, #edf7f5 45%, #f5fbf9 70%, #ffffff 100%)' }}>
         <Banner />
         <ShopByCategory />
-        <ProductGrid />
+        <ProductGrid products={products} homeConfig={homeConfig} bannerMap={bannerMap} />
         <CustomerReviews />
       </main>
     </>

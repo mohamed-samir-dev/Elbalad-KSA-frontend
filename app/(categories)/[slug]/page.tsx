@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { slugConfigs } from "../../lib/categoryConfig";
 import CategoryPageClient from "./CategoryPageClient";
+import { getCachedProducts } from "../../lib/products-cache";
 
-export const dynamic = "force-dynamic";
+export const revalidate = false;
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 const SITE_URL = "https://albilaad-ksa.com";
@@ -59,5 +60,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CategorySlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <CategoryPageClient slug={slug} />;
+  const products = await getCachedProducts();
+  return <CategoryPageClient slug={slug} initialProducts={products} />;
 }

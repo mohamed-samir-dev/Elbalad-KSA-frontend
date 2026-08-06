@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import GamesClient from "./GamesClient";
+import { getCachedProducts } from "../../lib/products-cache";
 
-export const dynamic = "force-dynamic";
+export const revalidate = false;
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 const SITE_URL = "https://albilaad-ksa.com";
@@ -41,6 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function GamesPage() {
-  return <GamesClient />;
+export default async function GamesPage() {
+  const products = await getCachedProducts();
+  return <GamesClient initialProducts={products} />;
 }

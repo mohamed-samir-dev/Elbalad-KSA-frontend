@@ -40,8 +40,8 @@ type Setting = { category: string; subCategory: string; showInHome: boolean; ord
 async function getCategories(): Promise<Category[]> {
   try {
     const [catRes, settingsRes] = await Promise.all([
-      fetch(`${BACKEND}/api/admin/sub-categories/public`, { cache: "no-store" }),
-      fetch(`${BACKEND}/api/admin/sub-categories/home-settings`, { cache: "no-store" }),
+      fetch(`${BACKEND}/api/admin/sub-categories`, { cache: "no-store" }),
+      fetch(`${BACKEND}/api/admin/sub-categories/settings`, { cache: "no-store" }),
     ]);
     const allCats: Category[] = catRes.ok ? await catRes.json() : [];
     const settings: Setting[] = settingsRes.ok ? await settingsRes.json() : [];

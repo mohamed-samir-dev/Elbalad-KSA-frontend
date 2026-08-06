@@ -1,50 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import ProductCard from "../../components/products/ProductCard";
 import type { Product } from "../../components/products/types";
 import { IoGridOutline, IoChevronBack, IoChevronForward, IoHome } from "react-icons/io5";
 
-export default function SmartphonesClient() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function SmartphonesClient({ initialProducts }: { initialProducts: Product[] }) {
   const [page, setPage] = useState(1);
   const ITEMS_PER_PAGE = 12;
 
-  useEffect(() => {
-    fetch(`/api/products`)
-      .then((r) => r.json())
-      .then((data: Product[]) => {
-        const filtered = data.filter((p) =>
-          p.category?.includes("ايفون") ||
-          p.category?.includes("جالكسي") ||
-          p.category?.toLowerCase().includes("iphone") ||
-          p.category?.toLowerCase().includes("samsung")
-        );
-        const parseStorage = (s?: string) => {
-          if (!s) return 0;
-          const n = parseFloat(s);
-          if (s.includes("تيرا") || s.toLowerCase().includes("tb")) return n * 1024;
-          return n || 0;
-        };
-        const colorOrder = (c?: string) => {
-          if (!c) return 99;
-          if (c.includes("برتقال") || c.toLowerCase().includes("orange")) return 0;
-          if (c.includes("سيلفر") || c.toLowerCase().includes("silver")) return 1;
-          if (c.includes("ازرق") || c.includes("أزرق") || c.toLowerCase().includes("blue")) return 2;
-          return 3;
-        };
-        const sorted = [...filtered].sort((a, b) => {
-          const storageDiff = parseStorage(a.storage) - parseStorage(b.storage);
-          if (storageDiff !== 0) return storageDiff;
-          return colorOrder(a.color) - colorOrder(b.color);
-        });
-        setProducts(sorted);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+  const products = useMemo(() => {
+    const filtered = initialProducts.filter((p) =>
+      p.category?.includes("ايفون") ||
+      p.category?.includes("جالكسي") ||
+      p.category?.toLowerCase().includes("iphone") ||
+      p.category?.toLowerCase().includes("samsung")
+    );
+    const parseStorage = (s?: string) => {
+      if (!s) return 0;
+      const n = parseFloat(s);
+      if (s.includes("تيرا") || s.toLowerCase().includes("tb")) return n * 1024;
+      return n || 0;
+    };
+    const colorOrder = (c?: string) => {
+      if (!c) return 99;
+      if (c.includes("برتقال") || c.toLowerCase().includes("orange")) return 0;
+      if (c.includes("سيلفر") || c.toLowerCase().includes("silver")) return 1;
+      if (c.includes("ازرق") || c.includes("أزرق") || c.toLowerCase().includes("blue")) return 2;
+      return 3;
+    };
+    return [...filtered].sort((a, b) => {
+      const storageDiff = parseStorage(a.storage) - parseStorage(b.storage);
+      if (storageDiff !== 0) return storageDiff;
+      return colorOrder(a.color) - colorOrder(b.color);
+    });
+  }, [initialProducts]);
 
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const label = "الهواتف الذكية";
@@ -79,9 +70,9 @@ export default function SmartphonesClient() {
             <div className="slide-up flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3" style={{ animationDelay: "0.1s" }}>
               <div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">{label}</h1>
-                <p className="text-sm sm:text-base text-white/60 mt-1.5">{loading ? "جاري تحميل المنتجات..." : `${products.length} منتج متوفر`}</p>
+                <p className="text-sm sm:text-base text-white/60 mt-1.5">{`${products.length} منتج متوفر`}</p>
               </div>
-              {!loading && products.length > 0 && (
+              {products.length > 0 && (
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2 border border-white/10 self-start sm:self-auto">
                   <IoGridOutline size={14} className="text-white/70" />
                   <span className="text-xs text-white/70 font-medium">صفحة {page} من {totalPages || 1}</span>
@@ -93,20 +84,7 @@ export default function SmartphonesClient() {
         </div>
 
         <div className="max-w-6xl mx-auto px-3 sm:px-4 pb-8 sm:pb-12">
-          {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm">
-                  <div style={{ paddingBottom: "110%" }} className="bg-gradient-to-b from-gray-100 to-gray-50 animate-pulse" />
-                  <div className="p-4 space-y-2.5">
-                    <div className="h-3.5 bg-gray-100 rounded-full w-3/4 animate-pulse" />
-                    <div className="h-3 bg-gray-100 rounded-full w-1/2 animate-pulse" />
-                    <div className="h-10 bg-gray-100 rounded-xl animate-pulse mt-3" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : !products.length ? (
+          {!products.length ? (
             <div className="flex flex-col items-center justify-center py-20 sm:py-28 gap-4 text-center">
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-[#1F7A8C]/10 to-[#1F7A8C]/5 flex items-center justify-center"><span className="text-4xl sm:text-5xl">📦</span></div>
               <p className="text-gray-600 text-base sm:text-lg font-bold">المنتجات ستُضاف قريباً</p>

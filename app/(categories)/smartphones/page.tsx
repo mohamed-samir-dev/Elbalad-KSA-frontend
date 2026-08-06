@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import SmartphonesClient from "./SmartphonesClient";
+import { getCachedProducts } from "../../lib/products-cache";
 
-export const dynamic = "force-dynamic";
+export const revalidate = false;
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 const SITE_URL = "https://albilaad-ksa.com";
@@ -41,6 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function SmartphonesPage() {
-  return <SmartphonesClient />;
+export default async function SmartphonesPage() {
+  const products = await getCachedProducts();
+  return <SmartphonesClient initialProducts={products} />;
 }

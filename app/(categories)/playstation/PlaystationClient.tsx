@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import ProductCard from "../../components/products/ProductCard";
 import type { Product } from "../../components/products/types";
@@ -8,21 +8,14 @@ import { IoGridOutline, IoChevronBack, IoChevronForward, IoHome } from "react-ic
 
 const PS_CATEGORIES = ["ps5", "ps4", "xbox", "controller", "gaming-accessories", "بلاي ستيشن"];
 
-export default function PlaystationClient() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function PlaystationClient({ initialProducts }: { initialProducts: Product[] }) {
   const [page, setPage] = useState(1);
   const ITEMS_PER_PAGE = 12;
 
-  useEffect(() => {
-    fetch(`/api/products`)
-      .then((r) => r.json())
-      .then((data: Product[]) => {
-        setProducts(data.filter((p) => PS_CATEGORIES.includes(p.category ?? "")));
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+  const products = useMemo(
+    () => initialProducts.filter((p) => PS_CATEGORIES.includes(p.category ?? "")),
+    [initialProducts]
+  );
 
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const label = "أجهزة بلاي ستيشن";

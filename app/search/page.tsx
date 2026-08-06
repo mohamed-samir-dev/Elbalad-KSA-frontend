@@ -1,10 +1,14 @@
 import { Suspense } from "react";
 import SearchClient from "./SearchClient";
+import { getCachedProducts } from "../lib/products-cache";
 
-export default function SearchPage() {
+export const revalidate = false;
+
+export default async function SearchPage() {
+  const products = await getCachedProducts();
   return (
     <Suspense>
-      <SearchClient />
+      <SearchClient allProducts={products} />
     </Suspense>
   );
 }
