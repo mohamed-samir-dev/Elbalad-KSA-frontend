@@ -4,7 +4,7 @@ const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 
 export const getCachedProducts = unstable_cache(
   async () => {
-    const res = await fetch(`${BACKEND}/api/products`, { cache: "no-store" });
+    const res = await fetch(`${BACKEND}/api/products`, { next: { tags: ["products"] } });
     if (!res.ok) return [];
     return res.json();
   },
@@ -18,7 +18,7 @@ export const getCachedProduct = unstable_cache(
       const products: { _id: string }[] = await getCachedProducts();
       const found = products.find((p) => p._id === id);
       if (found) return found;
-      const res = await fetch(`${BACKEND}/api/products/${id}`, { cache: "no-store" });
+      const res = await fetch(`${BACKEND}/api/products/${id}`, { next: { tags: ["products"] } });
       return res.ok ? res.json() : null;
     } catch {
       return null;

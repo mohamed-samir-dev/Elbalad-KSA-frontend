@@ -19,10 +19,13 @@ async function getCompany() {
 
 async function getHomeConfig() {
   try {
-    const r = await fetch(`${BACKEND}/api/sub-categories-home`, { next: { revalidate: 3600 } });
-    if (!r.ok) return { settings: [], max: 4 };
-    const data = await r.json();
-    return Array.isArray(data) ? { settings: data, max: 4 } : data;
+    const [settingsRes, maxRes] = await Promise.all([
+      fetch(`${BACKEND}/api/admin/sub-categories/home-settings`, { next: { revalidate: 3600 } }),
+      fetch(`${BACKEND}/api/admin/sub-categories/max`, { next: { revalidate: 3600 } }),
+    ]);
+    const settings = settingsRes.ok ? await settingsRes.json() : [];
+    const { max = 4 } = maxRes.ok ? await maxRes.json() : {};
+    return { settings, max };
   } catch {
     return { settings: [], max: 4 };
   }
