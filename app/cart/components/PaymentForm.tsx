@@ -5,7 +5,7 @@ import { CreditCard, ChevronDown, Calendar, Wallet, CheckCircle2, ArrowRight } f
 import { motion, AnimatePresence } from "framer-motion";
 import type { CustomerInfo } from "../../store/cartStore";
 
-const fmt = (n: number) => n.toLocaleString("en-US");
+const fmt = (n: number) => n.toString();
 
 interface Props {
   total: number;
