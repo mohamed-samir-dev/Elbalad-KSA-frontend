@@ -21,10 +21,10 @@ export default function PaymentForm({ total, itemCount, initialData, installment
   const MONTHS_OPTIONS = Array.from({ length: Math.floor(maxMonths / 2) }, (_, i) => (i + 1) * 2);
   const minDown = 500 * itemCount;
   const DOWN_OPTIONS = [
-    { label: `${fmt(minDown)} ر.س`, value: 0, sub: "الحد الأدنى" },
-    { label: `${fmt(minDown + 500)} ر.س`, value: 500, sub: "+500 ر.س" },
-    { label: `${fmt(minDown + 1000)} ر.س`, value: 1000, sub: "+1000 ر.س" },
-    { label: `${fmt(total)} ر.س`, value: total - minDown, sub: "دفع كامل" },
+    { label: "الحد الأدنى", amount: minDown, value: 0 },
+    { label: "+500 ر.س", amount: minDown + 500, value: 500 },
+    { label: "+1000 ر.س", amount: minDown + 1000, value: 1000 },
+    { label: "دفع كامل", amount: total, value: total - minDown },
   ];
 
   const [installmentType, setInstallmentType] = useState<"full" | "installment">(initialData?.installmentType ?? "installment");
