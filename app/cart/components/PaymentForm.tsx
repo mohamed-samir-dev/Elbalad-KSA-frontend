@@ -178,10 +178,11 @@ export default function PaymentForm({ total, itemCount, initialData, installment
                               <CheckCircle2 size={12} className="text-[#7CC043]" />
                             </span>
                           )}
+                          <p className={`text-xs text-gray-400 mb-0.5`}>{opt.label}</p>
+
                           <p className={`text-sm font-extrabold ${downExtra === opt.value ? "text-[#3b6a00]" : "text-gray-700"}`}>
-                            {opt.label}
+                            {fmt(opt.amount)} ر.س
                           </p>
-                          <p className="text-[10px] text-gray-400 mt-0.5">{opt.sub}</p>
                         </button>
                       ))}
                     </div>
