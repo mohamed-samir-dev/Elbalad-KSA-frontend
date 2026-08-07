@@ -1,12 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShoppingCart, MapPin, CreditCard, CheckCircle } from "lucide-react";
+import { ShoppingCart, CreditCard, Wallet, CheckCircle } from "lucide-react";
 
 const steps = [
   { id: 1, label: "السلة", icon: ShoppingCart },
-  { id: 2, label: "الشحن", icon: MapPin },
-  { id: 3, label: "الدفع", icon: CreditCard },
+  { id: 2, label: "طرق الدفع", icon: CreditCard },
+  { id: 3, label: "الدفع", icon: Wallet },
   { id: 4, label: "تأكيد", icon: CheckCircle },
 ];
 

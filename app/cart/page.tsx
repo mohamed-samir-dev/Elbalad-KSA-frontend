@@ -11,14 +11,15 @@ import CheckoutStepper from "../components/checkout/CheckoutStepper";
 import CartItemCard from "../components/checkout/CartItemCard";
 import OrderSummaryCard from "../components/checkout/OrderSummaryCard";
 import TrustBadges from "../components/checkout/TrustBadges";
-import CustomerForm from "./components/CustomerForm";
-
-const fmt = (n: number) => n.toLocaleString("en-US");
+import CustomerInfoForm from "./components/CustomerInfoForm";
+import PaymentForm from "./components/PaymentForm";
 
 export default function CartPage() {
   const router = useRouter();
   const { items, removeItem, updateQty, totalPrice, totalItems, setCustomer, customer } = useCartStore();
   const [mounted, setMounted] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [customerDraft, setCustomerDraft] = useState<Partial<CustomerInfo>>(customer ?? {});
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -69,7 +70,7 @@ export default function CartPage() {
   return (
     <main className="min-h-screen bg-[#f8f9fa]" dir="rtl">
       <style>{`body { background-color: #f8f9fa; }`}</style>
-      <CheckoutStepper currentStep={1} />
+      <CheckoutStepper currentStep={step === 1 ? 1 : 2} />
 
       {/* Page header */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-2">
@@ -86,30 +87,64 @@ export default function CartPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-24 pt-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* LEFT — Cart items + Customer form */}
+          {/* LEFT */}
           <div className="lg:col-span-2 space-y-4">
-            <AnimatePresence>
-              {items.map(({ product, qty }) => (
-                <CartItemCard
-                  key={product._id}
-                  product={product}
-                  qty={qty}
-                  onUpdateQty={updateQty}
-                  onRemove={removeItem}
-                />
-              ))}
-            </AnimatePresence>
+            <AnimatePresence mode="wait">
+              {step === 1 ? (
+                <motion.div
+                  key="step1"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  transition={{ duration: 0.25 }}
+                  className="space-y-4"
+                >
+                  <AnimatePresence>
+                    {items.map(({ product, qty }) => (
+                      <CartItemCard
+                        key={product._id}
+                        product={product}
+                        qty={qty}
+                        onUpdateQty={updateQty}
+                        onRemove={removeItem}
+                      />
+                    ))}
+                  </AnimatePresence>
 
-            <CustomerForm
-              total={total}
-              itemCount={count}
-              initialData={customer}
-              installmentMonths={installmentMonths}
-              onSubmit={(info: CustomerInfo) => {
-                setCustomer(info);
-                router.push("/checkout");
-              }}
-            />
+                  <CustomerInfoForm
+                    initialData={customerDraft}
+                    onNext={(info) => {
+                      setCustomerDraft(info);
+                      setStep(2);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <PaymentForm
+                    total={total}
+                    itemCount={count}
+                    initialData={customerDraft}
+                    installmentMonths={installmentMonths}
+                    onBack={() => {
+                      setStep(1);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    onSubmit={(info: CustomerInfo) => {
+                      setCustomer(info);
+                      router.push("/checkout");
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* RIGHT — Sticky order summary */}
@@ -121,14 +156,12 @@ export default function CartPage() {
                 cta={
                   <div className="space-y-3">
                     <div className="text-xs text-gray-400 text-center">
-                      أكمل بيانات الشحن أدناه ثم اضغط إتمام الطلب
+                      {step === 1 ? "أكمل بيانات الشحن ثم اضغط التالي" : "اختر طريقة الدفع وأتمم الطلب"}
                     </div>
                     <TrustBadges />
                   </div>
                 }
               />
-
-              {/* Free shipping notice */}
               <div className="bg-[#7CC043]/10 border border-[#7CC043]/30 rounded-xl px-4 py-3 text-center">
                 <p className="text-xs font-semibold text-[#3b6a00]">🚚 شحن مجاني على جميع الطلبات</p>
               </div>
