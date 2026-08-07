@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { User, MapPin } from "lucide-react";
+import { User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { CustomerInfo } from "../../store/cartStore";
 
@@ -97,7 +97,7 @@ export default function CustomerInfoForm({ initialData, onNext }: Props) {
             </AnimatePresence>
           </div>
 
-          <div ref={whatsappRef} className="sm:col-span-2 space-y-1.5">
+          <div ref={whatsappRef} className="space-y-1.5">
             <label className="text-xs font-semibold text-gray-600">رقم الواتساب <span className="text-red-400">*</span></label>
             <input
               type="tel"
@@ -115,32 +115,23 @@ export default function CustomerInfoForm({ initialData, onNext }: Props) {
               )}
             </AnimatePresence>
           </div>
-        </div>
-      </div>
 
-      {/* Address */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-gray-50 flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#1a6b7d]/10 rounded-lg flex items-center justify-center">
-            <MapPin size={15} className="text-[#1a6b7d]" />
+          <div ref={addressRef} className="space-y-1.5">
+            <label className="text-xs font-semibold text-gray-600">عنوان التوصيل <span className="text-red-400">*</span></label>
+            <input
+              value={address}
+              onChange={(e) => { setAddress(e.target.value); setErrors(p => ({ ...p, address: "" })); }}
+              placeholder="المدينة - الحي - الشارع"
+              className={errors.address ? inputErr : inputBase}
+            />
+            <AnimatePresence>
+              {errors.address && (
+                <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-red-400 text-xs flex items-center gap-1">
+                  <span>⚠</span> {errors.address}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
-          <h2 className="text-sm font-bold text-gray-800">عنوان التوصيل</h2>
-        </div>
-        <div ref={addressRef} className="px-5 py-5 space-y-1.5">
-          <label className="text-xs font-semibold text-gray-600">العنوان بالتفصيل <span className="text-red-400">*</span></label>
-          <input
-            value={address}
-            onChange={(e) => { setAddress(e.target.value); setErrors(p => ({ ...p, address: "" })); }}
-            placeholder="المدينة - الحي - الشارع"
-            className={errors.address ? inputErr : inputBase}
-          />
-          <AnimatePresence>
-            {errors.address && (
-              <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-red-400 text-xs flex items-center gap-1">
-                <span>⚠</span> {errors.address}
-              </motion.p>
-            )}
-          </AnimatePresence>
         </div>
       </div>
 
