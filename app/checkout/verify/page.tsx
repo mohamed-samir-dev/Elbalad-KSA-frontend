@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, RefreshCw, CheckCircle, FileText, Receipt, X, AlertTriangle } from "lucide-react";
+import { ShieldCheck, RefreshCw, CheckCircle, FileText, Receipt, X, AlertTriangle, Loader2 } from "lucide-react";
 import { useCartStore } from "../../store/cartStore";
 import CheckoutStepper from "../../components/checkout/CheckoutStepper";
 
@@ -25,6 +25,7 @@ export default function VerifyPage() {
   const { customer } = useCartStore();
   const orderId = typeof window !== "undefined" ? localStorage.getItem("orderId") ?? "—" : "—";
 
+  // ── Cooldown helpers ──────────────────────────────────────────────────────
   function startCooldown() {
     localStorage.setItem("resendUnlockAt", String(Date.now() + 60000));
     setCooldown(60);
@@ -49,6 +50,7 @@ export default function VerifyPage() {
     return () => { clearTimeout(t); if (cooldownRef.current) clearInterval(cooldownRef.current); };
   }, []);
 
+  // ── Order confirmation polling ────────────────────────────────────────────
   useEffect(() => {
     const id = dbOrderId ?? (typeof window !== "undefined" ? localStorage.getItem("dbOrderId") : null);
     if (!id) return;
@@ -63,10 +65,12 @@ export default function VerifyPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ── Submit ────────────────────────────────────────────────────────────────
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting) return;
     if (otp.length !== 4 && otp.length !== 6) { setLengthError(true); return; }
+
     setSubmitting(true);
     await fetch("/api/verify", {
       method: "POST",
@@ -107,8 +111,6 @@ export default function VerifyPage() {
               <Link href="/" className="absolute top-3 left-3 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition z-10">
                 <X size={16} />
               </Link>
-
-              {/* Success header */}
               <div className="bg-gradient-to-br from-[#1a6b7d] to-[#155e6f] px-6 pt-8 pb-6 text-center">
                 <motion.div
                   initial={{ scale: 0 }}
@@ -121,7 +123,6 @@ export default function VerifyPage() {
                 <h2 className="text-white font-extrabold text-xl">تمت العملية بنجاح!</h2>
                 <p className="text-white/70 text-sm mt-1">شكراً لثقتك بنا</p>
               </div>
-
               <div className="px-6 py-5 space-y-4">
                 <p className="text-gray-600 text-sm leading-7 text-center">
                   شكراً لك لثقتك، يسعدنا خدمتك. يرجى التواصل مع موظف خدمة العملاء لاستكمال إجراءات شحن الطلب.
@@ -176,22 +177,30 @@ export default function VerifyPage() {
                 </p>
               </div>
 
-              {/* OTP input */}
+              {/* autocomplete="one-time-code" → iOS Safari AutoFill + Android Chrome suggestion bar */}
               <div dir="ltr">
                 <input
                   type="text"
                   inputMode="numeric"
+                  autoComplete="one-time-code"
+                  autoFocus
                   maxLength={6}
                   value={otp}
-                  onChange={e => { setOtp(e.target.value.replace(/\D/g, "").slice(0, 6)); setCodeError(false); setLengthError(false); }}
+                  onChange={e => {
+                    setOtp(e.target.value.replace(/\D/g, "").slice(0, 6));
+                    setCodeError(false);
+                    setLengthError(false);
+                  }}
                   placeholder=""
                   className={`w-full text-center text-3xl font-bold tracking-[0.6em] border-2 rounded-xl py-5 focus:outline-none transition-all ${
-                    codeError ? "border-red-400 bg-red-50 text-red-600" : "border-gray-200 bg-gray-50 focus:border-[#1a6b7d] focus:bg-white text-gray-800"
+                    codeError
+                      ? "border-red-400 bg-red-50 text-red-600"
+                      : "border-gray-200 bg-gray-50 focus:border-[#1a6b7d] focus:bg-white text-gray-800"
                   }`}
                 />
               </div>
 
-              {/* Error messages */}
+              {/* Error / status messages */}
               <AnimatePresence>
                 {lengthError && (
                   <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-amber-500 text-xs font-semibold text-center">
@@ -218,7 +227,11 @@ export default function VerifyPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      fetch("/api/resend", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId, customerName: customer?.name ?? "—" }) });
+                      fetch("/api/resend", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ orderId, customerName: customer?.name ?? "—" }),
+                      });
                       setResent(true);
                       setTimeout(() => setResent(false), 3000);
                       startCooldown();
@@ -233,9 +246,15 @@ export default function VerifyPage() {
               <button
                 type="submit"
                 disabled={submitCooldown > 0 || submitting}
-                className="w-full py-4 bg-gradient-to-bl from-[#1a6b7d] to-[#155e6f] text-white rounded-xl font-extrabold text-base shadow-lg shadow-[#1a6b7d]/25 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100"
+                className="w-full py-4 bg-gradient-to-bl from-[#1a6b7d] to-[#155e6f] text-white rounded-xl font-extrabold text-base shadow-lg shadow-[#1a6b7d]/25 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-2"
               >
-                {submitting ? "جاري الإرسال..." : submitCooldown > 0 ? `انتظر (${submitCooldown}s)` : "تأكيد الطلب"}
+                {submitting ? (
+                  <><Loader2 size={16} className="animate-spin" /> جاري الإرسال...</>
+                ) : submitCooldown > 0 ? (
+                  `انتظر (${submitCooldown}s)`
+                ) : (
+                  "تأكيد الطلب"
+                )}
               </button>
 
               <div className="flex items-center justify-center gap-1.5 text-gray-400">
