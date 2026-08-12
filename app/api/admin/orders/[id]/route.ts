@@ -6,9 +6,11 @@ async function safeJson(res: Response) {
   try { return JSON.parse(text); } catch { return { ok: res.ok }; }
 }
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const res = await fetch(`${getBackend()}/api/checkout/${id}`);
+  const res = await fetch(`${getBackend()}/api/admin/orders/${id}`, {
+    headers: { cookie: req.headers.get("cookie") || "" },
+  });
   return NextResponse.json(await safeJson(res), { status: res.status });
 }
 
@@ -26,7 +28,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const res = await fetch(`${getBackend()}/api/checkout/${id}`, {
+  const res = await fetch(`${getBackend()}/api/admin/orders/${id}`, {
     method: "DELETE",
     headers: { cookie: req.headers.get("cookie") || "" },
   });
