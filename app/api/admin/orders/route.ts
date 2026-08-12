@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getBackend } from "../_lib";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const res = await fetch(`${getBackend()}/api/checkout`);
+    const res = await fetch(`${getBackend()}/api/admin/orders`, {
+      headers: { cookie: req.headers.get("cookie") || "" },
+    });
     if (!res.ok) {
       return NextResponse.json({ error: `Backend returned ${res.status}` }, { status: res.status });
     }
