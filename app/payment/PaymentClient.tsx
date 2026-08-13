@@ -237,11 +237,8 @@ export default function PaymentClient({ company }: { company: Company }) {
       <section className="w-full max-w-5xl mx-auto px-4 sm:px-8 lg:px-10 pt-10 sm:pt-12">
         <FadeUp>
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-lg overflow-hidden">
-            {/* top accent */}
             <div className="h-1 w-full bg-gradient-to-l from-[#1a6b7d] to-[#7CC043]" />
-
             <div className="p-6 sm:p-8 lg:p-10">
-              {/* header */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
                 <div className="space-y-2">
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1a6b7d] bg-[#1a6b7d]/8 px-3 py-1 rounded-full">
@@ -252,33 +249,14 @@ export default function PaymentClient({ company }: { company: Company }) {
                     قسّط مشترياتك <span className="text-[#1a6b7d]">بدون فوائد</span>
                   </h2>
                   <p className="text-gray-500 text-sm sm:text-base leading-relaxed max-w-md">
-                    نظام تقسيط مرن مباشر من المتجر دون الحاجة لبطاقة ائتمانية أو موافقة بنكية.
-                    اشترِ اليوم وادفع على دفعات شهرية تناسب ميزانيتك.
+                    نظام تقسيط مرن مباشر من المتجر دون الحاجة لبطاقة ائتمانية أو موافقة بنكية. اشترِ اليوم وادفع على دفعات شهرية تناسب ميزانيتك.
                   </p>
                 </div>
-
-                {/* 0% circle */}
                 <div className="shrink-0 mx-auto sm:mx-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-[#1a6b7d]/20 bg-[#1a6b7d]/5 flex flex-col items-center justify-center">
                   <span className="text-4xl sm:text-5xl font-black text-[#1a6b7d] leading-none">0</span>
                   <span className="text-xs font-bold text-gray-400 mt-0.5">% فائدة</span>
                 </div>
               </div>
-
-              {/* divider */}
-              <div className="my-6 h-px bg-gray-100" />
-
-              {/* highlights */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {installmentHighlights.map((h) => (
-                  <div key={h.title} className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-4 hover:border-[#1a6b7d]/20 hover:bg-[#1a6b7d]/3 transition-colors">
-                    <span className="text-lg block mb-2">{h.icon}</span>
-                    <p className="text-gray-800 font-bold text-xs sm:text-sm">{h.title}</p>
-                    <p className="text-gray-400 text-[11px] mt-1 leading-relaxed">{h.desc}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* cta */}
               <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-xl bg-[#f4f6f8] border border-gray-100 px-5 py-4">
                 <p className="text-gray-500 text-xs sm:text-sm text-center sm:text-right">
                   اختر التقسيط عند إتمام طلبك وسيتواصل معك فريقنا لترتيب خطة الدفع.
