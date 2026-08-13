@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { RiUser3Line, RiIdCardLine, RiWhatsappLine, RiMapPin2Line, RiArrowLeftLine, RiErrorWarningLine } from "react-icons/ri";
 import type { CustomerInfo } from "../../store/cartStore";
 
 interface Props {
@@ -11,136 +11,110 @@ interface Props {
 }
 
 const inputBase =
-  "w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#1a6b7d]/30 focus:border-[#1a6b7d] focus:bg-white transition-all placeholder:text-gray-400";
+  "w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#1a6b7d]/25 focus:border-[#1a6b7d] focus:bg-white transition-all placeholder:text-gray-400";
 const inputErr =
-  "w-full bg-red-50 border-2 border-red-400 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400/30 focus:bg-white transition-all placeholder:text-gray-400";
+  "w-full bg-red-50 border-2 border-red-400 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400/25 focus:bg-white transition-all placeholder:text-gray-400";
+
+const fields = [
+  { key: "name",       label: "الاسم كاملاً",           icon: RiUser3Line,     placeholder: "أدخل اسمك بالكامل",      dir: "rtl" },
+  { key: "nationalId", label: "رقم الهوية / الإقامة",   icon: RiIdCardLine,    placeholder: "رقم الهوية",              dir: "ltr" },
+  { key: "whatsapp",   label: "رقم الواتساب",            icon: RiWhatsappLine,  placeholder: "05XXXXXXXX",              dir: "ltr" },
+  { key: "address",    label: "عنوان التوصيل",           icon: RiMapPin2Line,   placeholder: "المدينة - الحي - الشارع", dir: "rtl" },
+];
 
 export default function CustomerInfoForm({ initialData, onNext }: Props) {
-  const [name, setName] = useState(initialData?.name ?? "");
-  const [nationalId, setNationalId] = useState(initialData?.nationalId ?? "");
-  const [whatsapp, setWhatsapp] = useState(initialData?.whatsapp ?? "");
-  const [address, setAddress] = useState(initialData?.address ?? "");
+  const [values, setValues] = useState({
+    name:       initialData?.name       ?? "",
+    nationalId: initialData?.nationalId ?? "",
+    whatsapp:   initialData?.whatsapp   ?? "",
+    address:    initialData?.address    ?? "",
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const refs = {
+    name:       useRef<HTMLDivElement>(null),
+    nationalId: useRef<HTMLDivElement>(null),
+    whatsapp:   useRef<HTMLDivElement>(null),
+    address:    useRef<HTMLDivElement>(null),
+  };
 
-  const nameRef = useRef<HTMLDivElement>(null);
-  const nationalIdRef = useRef<HTMLDivElement>(null);
-  const whatsappRef = useRef<HTMLDivElement>(null);
-  const addressRef = useRef<HTMLDivElement>(null);
+  const set = (key: string, val: string) => {
+    setValues(p => ({ ...p, [key]: val }));
+    setErrors(p => ({ ...p, [key]: "" }));
+  };
 
-  const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) =>
-    ref.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  const handleChange = (key: string, raw: string) => {
+    if (key === "name")       return set(key, raw.replace(/[0-9]/g, ""));
+    if (key === "nationalId") return set(key, raw.replace(/\D/g, "").slice(0, 10));
+    if (key === "whatsapp")   return set(key, raw.replace(/\D/g, "").slice(0, 10));
+    set(key, raw);
+  };
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!name.trim()) e.name = "الاسم مطلوب";
-    if (!nationalId.trim()) e.nationalId = "رقم الهوية مطلوب";
-    else if (!/^[12]\d{9}$/.test(nationalId.trim())) e.nationalId = "يجب أن يبدأ بـ 1 أو 2 ويتكون من 10 أرقام";
-    if (!whatsapp.trim()) e.whatsapp = "رقم الواتساب مطلوب";
-    else if (!/^05\d{8}$/.test(whatsapp.trim())) e.whatsapp = "يجب أن يبدأ بـ 05 ويتكون من 10 أرقام";
-    if (!address.trim()) e.address = "العنوان مطلوب";
+    if (!values.name.trim()) e.name = "الاسم مطلوب";
+    if (!values.nationalId.trim()) e.nationalId = "رقم الهوية مطلوب";
+    else if (!/^[12]\d{9}$/.test(values.nationalId.trim())) e.nationalId = "يجب أن يبدأ بـ 1 أو 2 ويتكون من 10 أرقام";
+    if (!values.whatsapp.trim()) e.whatsapp = "رقم الواتساب مطلوب";
+    else if (!/^05\d{8}$/.test(values.whatsapp.trim())) e.whatsapp = "يجب أن يبدأ بـ 05 ويتكون من 10 أرقام";
+    if (!values.address.trim()) e.address = "العنوان مطلوب";
     setErrors(e);
-
-    if (e.name) { scrollTo(nameRef); return false; }
-    if (e.nationalId) { scrollTo(nationalIdRef); return false; }
-    if (e.whatsapp) { scrollTo(whatsappRef); return false; }
-    if (e.address) { scrollTo(addressRef); return false; }
+    const first = ["name", "nationalId", "whatsapp", "address"].find(k => e[k]);
+    if (first) refs[first as keyof typeof refs].current?.scrollIntoView({ behavior: "smooth", block: "center" });
     return Object.keys(e).length === 0;
   };
 
-  const handleNext = () => {
-    if (validate()) onNext({ name, nationalId, whatsapp, address });
-  };
-
   return (
-    <div className="space-y-4">
-      {/* Customer Info */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-gray-50 flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#1a6b7d]/10 rounded-lg flex items-center justify-center">
-            <User size={15} className="text-[#1a6b7d]" />
-          </div>
-          <h2 className="text-sm font-bold text-gray-800">معلومات العميل</h2>
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      {/* Header */}
+      <div className="px-5 py-4 border-b border-gray-50 flex items-center gap-2.5">
+        <div className="w-8 h-8 bg-[#1a6b7d]/10 rounded-lg flex items-center justify-center">
+          <RiUser3Line size={16} className="text-[#1a6b7d]" />
         </div>
-        <div className="px-5 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div ref={nameRef} className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-600">الاسم كاملاً <span className="text-red-400">*</span></label>
-            <input
-              value={name}
-              onChange={(e) => { setName(e.target.value.replace(/[0-9]/g, "")); setErrors(p => ({ ...p, name: "" })); }}
-              placeholder="أدخل اسمك بالكامل"
-              className={errors.name ? inputErr : inputBase}
-            />
-            <AnimatePresence>
-              {errors.name && (
-                <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-red-400 text-xs flex items-center gap-1">
-                  <span>⚠</span> {errors.name}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <div ref={nationalIdRef} className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-600">رقم الهوية / الإقامة <span className="text-red-400">*</span></label>
-            <input
-              value={nationalId}
-              onChange={(e) => { setNationalId(e.target.value.replace(/\D/g, "").slice(0, 10)); setErrors(p => ({ ...p, nationalId: "" })); }}
-              placeholder="رقم الهوية"
-              dir="ltr"
-              className={errors.nationalId ? inputErr : inputBase}
-            />
-            <AnimatePresence>
-              {errors.nationalId && (
-                <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-red-400 text-xs flex items-center gap-1">
-                  <span>⚠</span> {errors.nationalId}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <div ref={whatsappRef} className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-600">رقم الواتساب <span className="text-red-400">*</span></label>
-            <input
-              type="tel"
-              value={whatsapp}
-              onChange={(e) => { setWhatsapp(e.target.value.replace(/\D/g, "").slice(0, 10)); setErrors(p => ({ ...p, whatsapp: "" })); }}
-              placeholder="05XXXXXXXX"
-              dir="ltr"
-              className={errors.whatsapp ? inputErr : inputBase}
-            />
-            <AnimatePresence>
-              {errors.whatsapp && (
-                <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-red-400 text-xs flex items-center gap-1">
-                  <span>⚠</span> {errors.whatsapp}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <div ref={addressRef} className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-600">عنوان التوصيل <span className="text-red-400">*</span></label>
-            <input
-              value={address}
-              onChange={(e) => { setAddress(e.target.value); setErrors(p => ({ ...p, address: "" })); }}
-              placeholder="المدينة - الحي - الشارع"
-              className={errors.address ? inputErr : inputBase}
-            />
-            <AnimatePresence>
-              {errors.address && (
-                <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-red-400 text-xs flex items-center gap-1">
-                  <span>⚠</span> {errors.address}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+        <h2 className="text-sm font-bold text-gray-800">معلومات العميل</h2>
       </div>
 
-      <button
-        onClick={handleNext}
-        className="w-full py-4 bg-gradient-to-bl from-[#1a6b7d] to-[#155e6f] text-white rounded-xl font-extrabold text-base shadow-lg shadow-[#1a6b7d]/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
-      >
-        التالي — اختيار طريقة الدفع ←
-      </button>
+      {/* Fields */}
+      <div className="px-5 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {fields.map(({ key, label, icon: Icon, placeholder, dir }) => (
+          <div key={key} ref={refs[key as keyof typeof refs]} className="space-y-1.5">
+            <label className="text-xs font-semibold text-gray-500 flex items-center gap-1.5">
+              <Icon size={12} className="text-[#1a6b7d]" />
+              {label} <span className="text-red-400">*</span>
+            </label>
+            <input
+              value={values[key as keyof typeof values]}
+              onChange={e => handleChange(key, e.target.value)}
+              placeholder={placeholder}
+              dir={dir}
+              type={key === "whatsapp" ? "tel" : "text"}
+              className={errors[key] ? inputErr : inputBase}
+            />
+            <AnimatePresence>
+              {errors[key] && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="text-red-400 text-xs flex items-center gap-1"
+                >
+                  <RiErrorWarningLine size={12} /> {errors[key]}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+        ))}
+      </div>
+
+      {/* Submit */}
+      <div className="px-5 pb-5">
+        <button
+          onClick={() => { if (validate()) onNext(values); }}
+          className="w-full py-3.5 bg-gradient-to-l from-[#1a6b7d] to-[#1d8fa5] text-white rounded-xl font-extrabold text-sm shadow-lg shadow-[#1a6b7d]/20 hover:shadow-[#1a6b7d]/35 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2"
+        >
+          التالي — اختيار طريقة الدفع
+          <RiArrowLeftLine size={16} />
+        </button>
+      </div>
     </div>
   );
 }

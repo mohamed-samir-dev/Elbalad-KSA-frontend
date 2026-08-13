@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { RiSubtractLine, RiAddLine, RiDeleteBin6Line } from "react-icons/ri";
 
 const fmt = (n: number) => n.toLocaleString("ar-SA");
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-const resolveImg = (src: string) =>
-  src.startsWith("http") ? src : `${API}${src}`;
+const resolveImg = (src: string) => src.startsWith("http") ? src : `${API}${src}`;
 
 interface CartItemCardProps {
   product: {
@@ -68,12 +67,12 @@ export default function CartItemCard({ product, qty, onUpdateQty, onRemove }: Ca
 
         <div className="flex items-center justify-between mt-2">
           {/* Qty controls */}
-          <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl p-0.5">
+          <div className="flex items-center gap-0.5 bg-gray-50 border border-gray-200 rounded-xl p-0.5">
             <button
               onClick={() => onUpdateQty(product._id, qty - 1)}
               className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-200 transition text-gray-500"
             >
-              <Minus size={13} />
+              <RiSubtractLine size={14} />
             </button>
             <AnimatePresence mode="wait">
               <motion.span
@@ -91,17 +90,17 @@ export default function CartItemCard({ product, qty, onUpdateQty, onRemove }: Ca
               onClick={() => onUpdateQty(product._id, qty + 1)}
               className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#1a6b7d]/10 transition text-[#1a6b7d]"
             >
-              <Plus size={13} />
+              <RiAddLine size={14} />
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <span className="text-xs font-bold text-gray-600">{fmt(lineTotal)} ر.س</span>
             <button
               onClick={() => onRemove(product._id)}
-              className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+              className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition"
             >
-              <Trash2 size={13} />
+              <RiDeleteBin6Line size={15} />
             </button>
           </div>
         </div>

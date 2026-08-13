@@ -13,17 +13,22 @@ export interface CustomerInfo {
   whatsapp: string;
   address: string;
   installmentType: "full" | "installment";
+  installmentProvider?: "tabby" | "tamara";
   months: number;
   downPayment: number;
+  discountCode?: string;
+  discountAmount?: number;
 }
 
 interface CartState {
   items: CartItem[];
   customer: CustomerInfo | null;
+  pendingDiscountCode: string | null;
   addItem: (product: Product) => void;
   removeItem: (id: string) => void;
   updateQty: (id: string, qty: number) => void;
   setCustomer: (info: CustomerInfo) => void;
+  setPendingDiscountCode: (code: string) => void;
   clear: () => void;
   totalItems: () => number;
   totalPrice: () => number;
@@ -34,6 +39,7 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       customer: null,
+      pendingDiscountCode: null,
       addItem: (product) =>
         set((s) => {
           const existing = s.items.find((i) => i.product._id === product._id);
@@ -57,7 +63,8 @@ export const useCartStore = create<CartState>()(
                 ),
         })),
       setCustomer: (info) => set({ customer: info }),
-      clear: () => set({ items: [], customer: null }),
+      setPendingDiscountCode: (code) => set({ pendingDiscountCode: code }),
+      clear: () => set({ items: [], customer: null, pendingDiscountCode: null }),
       totalItems: () => get().items.reduce((sum, i) => sum + i.qty, 0),
       totalPrice: () =>
         get().items.reduce(

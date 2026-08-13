@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IoCartOutline, IoCheckmarkCircle, IoShieldCheckmark, IoTimeOutline, IoCarOutline, IoCheckmarkDoneCircle, IoFlash, IoStorefront } from "react-icons/io5";
 import type { Product } from "../../../components/products/types";
@@ -14,6 +15,18 @@ interface ProductInfoProps {
 
 export default function ProductInfo({ product, addedToCart, onAddToCart }: ProductInfoProps) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleAdd = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      onAddToCart();
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 3000);
+    }, 600);
+  };
   const { name, brand, color, storage, network, salePrice, taxIncluded, installment, freeDelivery, deliveryTime, inStock } = product;
   const originalPrice = product.originalPrice ?? 0;
   const hasDiscount = salePrice != null && salePrice !== originalPrice;
@@ -109,31 +122,37 @@ export default function ProductInfo({ product, addedToCart, onAddToCart }: Produ
       </div>
 
       {/* Cart */}
-      <div>
-        {!addedToCart ? (
-          <button onClick={onAddToCart} className="product-page-cart-btn group w-full">
-            <span className="product-page-cart-btn-shine" />
-            <span className="relative z-10 flex items-center justify-center gap-2.5">
-              <IoCartOutline size={22} className="transition-transform group-hover:scale-110" />
-              أضف للسلة
-            </span>
-          </button>
-        ) : (
-          <div className="flex flex-col gap-2.5">
-            <div className="flex items-center justify-center gap-2 text-emerald-700 bg-emerald-50 py-3.5 rounded-2xl border border-emerald-200">
-              <IoCheckmarkDoneCircle size={18} />
-              <span className="text-sm font-bold">تمت الإضافة للسلة بنجاح ✓</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2.5">
-              <button onClick={() => router.back()} className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm py-3.5 rounded-xl transition-colors">
-                متابعة التسوق
-              </button>
-              <button onClick={() => router.push("/cart")} className="bg-[#1a6b7d] text-white font-bold text-sm py-3.5 rounded-xl flex items-center justify-center gap-2">
-                <IoCartOutline size={16} /> عرض السلة
-              </button>
+      <div className="relative">
+        {/* Popup */}
+        {showPopup && (
+          <div className="absolute -top-14 left-0 right-0 z-20 pdp-popup">
+            <div className="bg-gradient-to-l from-[#1a6b7d] to-[#155e6f] rounded-2xl px-4 py-3 shadow-lg shadow-[#1a6b7d]/30 flex items-center gap-3">
+              <IoCheckmarkDoneCircle size={18} className="text-white shrink-0" />
+              <span className="text-sm font-bold text-white">تمت إضافة المنتج للسلة بنجاح</span>
             </div>
           </div>
         )}
+
+        <button
+          onClick={handleAdd}
+          disabled={loading || addedToCart}
+          className="product-page-cart-btn group w-full disabled:opacity-80"
+        >
+          <span className="product-page-cart-btn-shine" />
+          <span className="relative z-10 flex items-center justify-center gap-2.5">
+            {loading ? (
+              <svg className="animate-spin" width={22} height={22} viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,.3)" strokeWidth="3" />
+                <path d="M12 2a10 10 0 0 1 10 10" stroke="white" strokeWidth="3" strokeLinecap="round" />
+              </svg>
+            ) : addedToCart ? (
+              <><IoCartOutline size={22} /> عرض السلة</>
+            ) : (
+              <><IoCartOutline size={22} className="transition-transform group-hover:scale-110" /> أضف للسلة</>
+            )}
+          </span>
+        </button>
+
       </div>
     </div>
   );

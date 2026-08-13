@@ -7,7 +7,6 @@ import { ChevronRight } from "lucide-react";
 import { useCartStore } from "../store/cartStore";
 import CheckoutStepper from "../components/checkout/CheckoutStepper";
 import OrderSummaryCard from "../components/checkout/OrderSummaryCard";
-import TrustBadges from "../components/checkout/TrustBadges";
 import PaymentForm from "./components/PaymentForm";
 
 export default function CheckoutPage() {
@@ -18,6 +17,7 @@ export default function CheckoutPage() {
   const total = mounted ? totalPrice() : 0;
   const itemCount = mounted ? items.reduce((sum, i) => sum + i.qty, 0) : 0;
   const downPayment = customer?.installmentType === "installment" ? (customer.downPayment ?? 0) : 0;
+  const months = customer?.months ?? 0;
 
   if (!mounted) return null;
   if (!customer || items.length === 0) { router.push("/cart"); return null; }
@@ -68,39 +68,24 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-24 pt-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-24 pt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
 
           {/* LEFT — Payment form */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 order-2 lg:order-1">
             <PaymentForm onSubmit={handleSubmit} />
           </div>
 
           {/* RIGHT — Sticky summary */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 order-1 lg:order-2">
             <div className="sticky top-4 space-y-3">
               <OrderSummaryCard
                 total={total}
                 itemCount={itemCount}
                 downPayment={downPayment}
+                installmentType={customer?.installmentType}
+                months={months}
               />
-
-              {/* Mini product list */}
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 space-y-3">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">المنتجات</p>
-                {items.map(({ product, qty }) => {
-                  const price = product.salePrice ?? product.originalPrice ?? product.price;
-                  return (
-                    <div key={product._id} className="flex items-center justify-between gap-2">
-                      <span className="text-xs text-gray-700 font-medium line-clamp-1 flex-1">{product.name}</span>
-                      <span className="text-xs text-gray-500 shrink-0">×{qty}</span>
-                      <span className="text-xs font-bold text-[#1a6b7d] shrink-0">{(price * qty).toLocaleString("en-US")} ر.س</span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <TrustBadges className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4" />
             </div>
           </div>
         </div>
