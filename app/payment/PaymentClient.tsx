@@ -42,6 +42,14 @@ const IconInstallment = () => (
     <circle cx="34" cy="30" r="5" fill="white" fillOpacity=".2" stroke="white"/><path d="M32 30l1.5 1.5L35 28.5" strokeWidth="1.5"/>
   </svg>
 );
+const IconZeroInterest = () => (
+  <svg viewBox="0 0 48 48" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="24" cy="24" r="18" fill="white" fillOpacity=".1"/>
+    <path d="M16 32l16-16" strokeWidth="2.5"/>
+    <circle cx="18" cy="19" r="4"/>
+    <circle cx="30" cy="29" r="4"/>
+  </svg>
+);
 const IconShield = () => (
   <svg viewBox="0 0 48 48" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M24 4l16 6v12c0 9-7 17-16 20C8 39 1 31 1 22V10l16-6z" fill="white" fillOpacity=".15"/><path d="M17 24l5 5 9-10"/>
@@ -74,6 +82,13 @@ const IconCheck = () => (
 );
 
 /* ── Data ── */
+const installmentHighlights = [
+  { icon: "✦", title: "بدون فوائد", desc: "نسبة الفائدة 0% على جميع خطط التقسيط" },
+  { icon: "📅", title: "أقساط مرنة", desc: "اختر عدد الأشهر الذي يناسب ميزانيتك" },
+  { icon: "⚡", title: "موافقة فورية", desc: "لا انتظار، يتم تأكيد طلبك في دقائق" },
+  { icon: "🔒", title: "آمن وموثوق", desc: "جميع المعاملات مشفّرة ومحمية بالكامل" },
+];
+
 const paymentMethods = [
   { title: "بطاقة مدى", desc: "ادفع بسهولة عبر بطاقة مدى المحلية.", color: "#0F4C6E", imgBg: true, Icon: IconMada },
   { title: "بطاقات الائتمان", desc: "نقبل فيزا وماستركارد وجميع البطاقات الائتمانية.", color: "#0a3550", imgBg: true, Icon: IconVisa },
@@ -216,6 +231,66 @@ export default function PaymentClient({ company }: { company: Company }) {
             </FadeUp>
           ))}
         </div>
+      </section>
+
+      {/* ════════ INSTALLMENT CARD ════════ */}
+      <section className="w-full max-w-5xl mx-auto px-4 sm:px-8 lg:px-10 pt-10 sm:pt-12">
+        <FadeUp>
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-lg overflow-hidden">
+            {/* top accent */}
+            <div className="h-1 w-full bg-gradient-to-l from-[#1a6b7d] to-[#7CC043]" />
+
+            <div className="p-6 sm:p-8 lg:p-10">
+              {/* header */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+                <div className="space-y-2">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1a6b7d] bg-[#1a6b7d]/8 px-3 py-1 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#1a6b7d] animate-pulse" />
+                    نظام التقسيط الخاص بالمتجر
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-gray-900">
+                    قسّط مشترياتك <span className="text-[#1a6b7d]">بدون فوائد</span>
+                  </h2>
+                  <p className="text-gray-500 text-sm sm:text-base leading-relaxed max-w-md">
+                    نظام تقسيط مرن مباشر من المتجر دون الحاجة لبطاقة ائتمانية أو موافقة بنكية.
+                    اشترِ اليوم وادفع على دفعات شهرية تناسب ميزانيتك.
+                  </p>
+                </div>
+
+                {/* 0% circle */}
+                <div className="shrink-0 mx-auto sm:mx-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-[#1a6b7d]/20 bg-[#1a6b7d]/5 flex flex-col items-center justify-center">
+                  <span className="text-4xl sm:text-5xl font-black text-[#1a6b7d] leading-none">0</span>
+                  <span className="text-xs font-bold text-gray-400 mt-0.5">% فائدة</span>
+                </div>
+              </div>
+
+              {/* divider */}
+              <div className="my-6 h-px bg-gray-100" />
+
+              {/* highlights */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {installmentHighlights.map((h) => (
+                  <div key={h.title} className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-4 hover:border-[#1a6b7d]/20 hover:bg-[#1a6b7d]/3 transition-colors">
+                    <span className="text-lg block mb-2">{h.icon}</span>
+                    <p className="text-gray-800 font-bold text-xs sm:text-sm">{h.title}</p>
+                    <p className="text-gray-400 text-[11px] mt-1 leading-relaxed">{h.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* cta */}
+              <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-xl bg-[#f4f6f8] border border-gray-100 px-5 py-4">
+                <p className="text-gray-500 text-xs sm:text-sm text-center sm:text-right">
+                  اختر التقسيط عند إتمام طلبك وسيتواصل معك فريقنا لترتيب خطة الدفع.
+                </p>
+                <a href="/" className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-[#1a6b7d] hover:bg-[#155e6f] transition-colors">
+                  تسوق الآن
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M12.293 4.293a1 1 0 011.414 0l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414-1.414L15.586 11H3a1 1 0 110-2h12.586l-3.293-3.293a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </FadeUp>
       </section>
 
       {/* ════════ FEATURES STRIP ════════ */}

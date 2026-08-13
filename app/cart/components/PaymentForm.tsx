@@ -157,39 +157,19 @@ export default function PaymentForm({ total, itemCount, initialData, installment
 
                   {/* Provider selection */}
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-gray-600">اختر جهة التقسيط</label>
-                    <div className="grid grid-cols-1 gap-3">
-                      {(["store"] as const).map((p) => {
-                        const active = installmentProvider === p;
-                        return (
-                          <button
-                            key={p}
-                            type="button"
-                            onClick={() => setInstallmentProvider(p)}
-                            className={`relative flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-2xl border-2 transition-all duration-200 bg-white ${
-                              active
-                                ? "border-[#1a6b7d] bg-[#1a6b7d]/5 shadow-md"
-                                : "border-gray-200 hover:border-gray-300 bg-white"
-                            }`}
-                          >
-                            {active && (
-                              <span className="absolute top-2 left-2">
-                                <CheckCircle2 size={15} className="text-[#1a6b7d]" />
-                              </span>
-                            )}
-                            <Image
-                              src={p === "tabby" ? "/Tabby-01.png" : p === "tamara" ? "/tamara.png" : "/logo.webp"}
-                              alt={p === "store" ? "نظام المتجر" : p}
-                              width={90}
-                              height={32}
-                              className="object-contain w-[80%] max-h-8"
-                            />
-                            {p === "store" && (
-                              <span className="text-[10px] font-bold text-[#1a6b7d]">نظام المتجر</span>
-                            )}
-                          </button>
-                        );
-                      })}
+                    <label className="text-xs font-semibold text-gray-600">جهة التقسيط</label>
+                    <div className="rounded-2xl border border-[#1a6b7d]/20 bg-[#f8fbfc] p-4 flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl border border-gray-100 bg-white flex items-center justify-center shrink-0 shadow-sm">
+                        <Image src="/logo.webp" alt="نظام المتجر" width={40} height={40} className="object-contain w-full h-full" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <p className="text-sm font-bold text-gray-800">نظام المتجر</p>
+                          <span className="text-[10px] font-bold text-[#1a6b7d] bg-[#1a6b7d]/10 px-2 py-0.5 rounded-full">0% فائدة</span>
+                        </div>
+                        <p className="text-xs text-gray-400">تقسيط مريح بدون فوائد مباشرة من المتجر</p>
+                      </div>
+                      <CheckCircle2 size={18} className="text-[#1a6b7d] shrink-0" />
                     </div>
                   </div>
 
