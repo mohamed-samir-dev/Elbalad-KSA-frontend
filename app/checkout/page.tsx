@@ -14,7 +14,8 @@ export default function CheckoutPage() {
   const { items, customer, totalPrice } = useCartStore();
   const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
 
-  const total = mounted ? totalPrice() : 0;
+  const rawTotal = mounted ? totalPrice() : 0;
+  const total = rawTotal - (customer?.discountAmount ?? 0);
   const itemCount = mounted ? items.reduce((sum, i) => sum + i.qty, 0) : 0;
   const downPayment = customer?.installmentType === "installment" ? (customer.downPayment ?? 0) : 0;
   const months = customer?.months ?? 0;
