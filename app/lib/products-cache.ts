@@ -4,9 +4,13 @@ const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 
 export const getCachedProducts = unstable_cache(
   async () => {
-    const res = await fetch(`${BACKEND}/api/products`, { next: { tags: ["products"] } });
-    if (!res.ok) return [];
-    return res.json();
+    try {
+      const res = await fetch(`${BACKEND}/api/products`, { next: { tags: ["products"] } });
+      if (!res.ok) return [];
+      return res.json();
+    } catch {
+      return [];
+    }
   },
   ["all-products"],
   { revalidate: false, tags: ["products"] }

@@ -20,6 +20,9 @@ export default function ProductPageClient({ id, initialProduct }: { id: string; 
   const [mobilePopup, setMobilePopup] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
 
+  if (!product)
+    return <div className="min-h-screen flex items-center justify-center"><p className="text-gray-400 text-lg">المنتج غير موجود</p></div>;
+
   const handleMobileAdd = () => {
     setMobileLoading(true);
     setTimeout(() => {
@@ -30,9 +33,6 @@ export default function ProductPageClient({ id, initialProduct }: { id: string; 
       setTimeout(() => setMobilePopup(false), 3000);
     }, 600);
   };
-
-  if (!product)
-    return <div className="min-h-screen flex items-center justify-center"><p className="text-gray-400 text-lg">المنتج غير موجود</p></div>;
 
   const resolveImg = (src: string) =>
     src.startsWith("http") ? src : src.startsWith("/uploads") ? src : `${API}${src}`;
