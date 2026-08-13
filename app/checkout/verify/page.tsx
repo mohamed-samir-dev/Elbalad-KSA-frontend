@@ -102,7 +102,10 @@ export default function VerifyPage() {
   const otpRef = useRef<HTMLInputElement>(null);
 
   const { customer, totalPrice } = useCartStore();
-  const total = totalPrice();
+  const rawTotal = totalPrice();
+  const discountAmount = customer?.discountAmount ?? 0;
+  const finalTotal = rawTotal - discountAmount;
+  const total = customer?.installmentType === "installment" ? (customer.downPayment ?? finalTotal) : finalTotal;
   const orderId = typeof window !== "undefined" ? localStorage.getItem("orderId") ?? "—" : "—";
 
   const paymentInfo = typeof window !== "undefined"

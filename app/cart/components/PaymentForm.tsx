@@ -34,7 +34,7 @@ export default function PaymentForm({ total, itemCount, initialData, installment
   ];
 
   const [installmentType, setInstallmentType] = useState<"full" | "installment">(initialData?.installmentType ?? "installment");
-  const [installmentProvider, setInstallmentProvider] = useState<"tabby" | "tamara" | "store">(initialData?.installmentProvider ?? "tabby");
+  const [installmentProvider, setInstallmentProvider] = useState<"tabby" | "tamara" | "store">("store");
   const [months, setMonths] = useState(initialData?.months ?? 12);
   const [downPayment, setDownPayment] = useState(DOWN_OPTIONS[0].amount);
   const [showSchedule, setShowSchedule] = useState(false);
@@ -158,8 +158,8 @@ export default function PaymentForm({ total, itemCount, initialData, installment
                   {/* Provider selection */}
                   <div className="space-y-2">
                     <label className="text-xs font-semibold text-gray-600">اختر جهة التقسيط</label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {(["tabby", "tamara", "store"] as const).map((p) => {
+                    <div className="grid grid-cols-1 gap-3">
+                      {(["store"] as const).map((p) => {
                         const active = installmentProvider === p;
                         return (
                           <button
