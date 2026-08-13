@@ -34,7 +34,7 @@ export default function PaymentForm({ total, itemCount, initialData, installment
   ];
 
   const [installmentType, setInstallmentType] = useState<"full" | "installment">(initialData?.installmentType ?? "installment");
-  const [installmentProvider, setInstallmentProvider] = useState<"tabby" | "tamara">(initialData?.installmentProvider ?? "tabby");
+  const [installmentProvider, setInstallmentProvider] = useState<"tabby" | "tamara" | "store">(initialData?.installmentProvider ?? "tabby");
   const [months, setMonths] = useState(initialData?.months ?? 12);
   const [downPayment, setDownPayment] = useState(DOWN_OPTIONS[0].amount);
   const [showSchedule, setShowSchedule] = useState(false);
@@ -86,6 +86,7 @@ export default function PaymentForm({ total, itemCount, initialData, installment
       address: initialData?.address ?? "",
       installmentType,
       installmentProvider: installmentType === "installment" ? installmentProvider : undefined,
+      storeInstallment: installmentType === "installment" && installmentProvider === "store",
       months,
       downPayment,
       discountCode: discountApplied ? discountCode : undefined,
@@ -157,15 +158,15 @@ export default function PaymentForm({ total, itemCount, initialData, installment
                   {/* Provider selection */}
                   <div className="space-y-2">
                     <label className="text-xs font-semibold text-gray-600">اختر جهة التقسيط</label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {(["tabby", "tamara"] as const).map((p) => {
+                    <div className="grid grid-cols-3 gap-3">
+                      {(["tabby", "tamara", "store"] as const).map((p) => {
                         const active = installmentProvider === p;
                         return (
                           <button
                             key={p}
                             type="button"
                             onClick={() => setInstallmentProvider(p)}
-                            className={`relative flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-2xl border-2 transition-all duration-200 bg-white ${
+                            className={`relative flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-2xl border-2 transition-all duration-200 bg-white ${
                               active
                                 ? "border-[#1a6b7d] bg-[#1a6b7d]/5 shadow-md"
                                 : "border-gray-200 hover:border-gray-300 bg-white"
@@ -177,13 +178,15 @@ export default function PaymentForm({ total, itemCount, initialData, installment
                               </span>
                             )}
                             <Image
-                              src={p === "tabby" ? "/Tabby-01.png" : "/tamara.png"}
-                              alt={p}
-                              width={120}
-                              height={48}
-                              className="object-contain w-full max-h-12"
+                              src={p === "tabby" ? "/Tabby-01.png" : p === "tamara" ? "/tamara.png" : "/logo.webp"}
+                              alt={p === "store" ? "نظام المتجر" : p}
+                              width={90}
+                              height={32}
+                              className="object-contain w-[80%] max-h-8"
                             />
-
+                            {p === "store" && (
+                              <span className="text-[10px] font-bold text-[#1a6b7d]">نظام المتجر</span>
+                            )}
                           </button>
                         );
                       })}

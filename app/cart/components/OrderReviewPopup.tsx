@@ -96,7 +96,7 @@ export default function OrderReviewPopup({ customer, total, onDone }: Props) {
               {isInstallment ? (
                 <>
                   <PayRow label="الدفعة الأولى"  value={`${fmt(customer.downPayment)} ر.س`} />
-                  <PayRow label="جهة التقسيط"    value={customer.installmentProvider === "tabby" ? "Tabby" : "Tamara"} />
+                  <PayRow label="جهة التقسيط"    value={customer.installmentProvider === "tabby" ? "Tabby" : customer.installmentProvider === "store" ? "نظام المتجر" : "Tamara"} />
                   <PayRow label="عدد الأشهر"     value={`${customer.months} شهر`} />
                 </>
               ) : (

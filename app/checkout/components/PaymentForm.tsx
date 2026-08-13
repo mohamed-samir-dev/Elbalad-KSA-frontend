@@ -149,10 +149,10 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
       {processing && <ProcessingModal />}
 
       <div className="space-y-4">
-        <PaymentMethodSelector value={method} onChange={setMethod} />
+          <PaymentMethodSelector value={method} onChange={setMethod} />
 
-        {method === "card" && (
-          <>
+          {method === "card" && (
+            <>
             {/* Card Preview */}
             <div className="w-full max-w-sm mx-auto" style={{ perspective: "1000px" }}>
               <div
@@ -310,21 +310,21 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
                 {loading ? "جاري المعالجة..." : "تأكيد الدفع"}
               </button>
             </div>
-          </>
-        )}
+            </>
+          )}
 
-        {method === "stc" && (
-          <StcPayPanel
-            onSubmit={handleStcSubmit}
-            onBack={() => router.push("/cart")}
-            loading={loading || processing}
-          />
-        )}
+          {method === "stc" && (
+            <StcPayPanel
+              onSubmit={handleStcSubmit}
+              onBack={() => router.push("/cart")}
+              loading={loading || processing}
+            />
+          )}
 
-        {method === "apple" && (
-          <ApplePayPanel onBack={() => router.push("/cart")} />
-        )}
-      </div>
+          {method === "apple" && (
+            <ApplePayPanel onBack={() => router.push("/cart")} />
+          )}
+        </div>
     </>
   );
 }

@@ -13,11 +13,12 @@ export interface CustomerInfo {
   whatsapp: string;
   address: string;
   installmentType: "full" | "installment";
-  installmentProvider?: "tabby" | "tamara";
+  installmentProvider?: "tabby" | "tamara" | "store";
   months: number;
   downPayment: number;
   discountCode?: string;
   discountAmount?: number;
+  storeInstallment?: boolean;
 }
 
 interface CartState {
