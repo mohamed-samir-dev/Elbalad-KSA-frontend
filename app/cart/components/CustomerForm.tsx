@@ -127,6 +127,9 @@ export default function CustomerForm({ total, itemCount, initialData, installmen
               onChange={(e) => { setNationalId(e.target.value.replace(/\D/g, "").slice(0, 10)); setErrors(p => ({ ...p, nationalId: "" })); }}
               placeholder="رقم الهوية"
               dir="ltr"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={10}
               className={errors.nationalId ? inputErr : inputBase}
             />
             <AnimatePresence>
@@ -146,6 +149,9 @@ export default function CustomerForm({ total, itemCount, initialData, installmen
               onChange={(e) => { setWhatsapp(e.target.value.replace(/\D/g, "").slice(0, 10)); setErrors(p => ({ ...p, whatsapp: "" })); }}
               placeholder="05XXXXXXXX"
               dir="ltr"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={10}
               className={errors.whatsapp ? inputErr : inputBase}
             />
             <AnimatePresence>

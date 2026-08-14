@@ -49,6 +49,12 @@ export default function CustomerInfoForm({ initialData, onNext }: Props) {
     set(key, raw);
   };
 
+  const getInputProps = (key: string) => {
+    if (key === "nationalId") return { inputMode: "numeric" as const, pattern: "[0-9]*", maxLength: 10 };
+    if (key === "whatsapp")   return { inputMode: "numeric" as const, pattern: "[0-9]*", maxLength: 10 };
+    return {};
+  };
+
   const validate = () => {
     const e: Record<string, string> = {};
     if (!values.name.trim()) e.name = "الاسم مطلوب";
@@ -87,6 +93,7 @@ export default function CustomerInfoForm({ initialData, onNext }: Props) {
               placeholder={placeholder}
               dir={dir}
               type={key === "whatsapp" ? "tel" : "text"}
+              {...getInputProps(key)}
               className={errors[key] ? inputErr : inputBase}
             />
             <AnimatePresence>

@@ -96,6 +96,8 @@ export function StcPayPanel({
               type="tel"
               maxLength={10}
               dir="ltr"
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="05XXXXXXXX"
               value={phone}
               onChange={(e) => { setPhone(e.target.value.replace(/\D/g, "").slice(0, 10)); setErr(""); }}

@@ -225,6 +225,8 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
                     <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400"><CreditCard size={16} /></span>
                     <input
                       autoComplete="cc-number" type="text" maxLength={19} dir="ltr"
+                      inputMode="numeric"
+                      pattern="[0-9 ]*"
                       value={fields.name}
                       onChange={e => {
                         let v = e.target.value.replace(/\D/g, "").slice(0, 16);
@@ -250,6 +252,9 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
                     <label className="text-xs font-semibold text-gray-600">تاريخ الانتهاء <span className="text-red-400">*</span></label>
                     <input
                       autoComplete="cc-exp" type="text" maxLength={5} dir="ltr"
+                      inputMode="numeric"
+                      pattern="[0-9/]*"
+                      placeholder="MM/YY"
                       value={fields.age}
                       onChange={e => {
                         let v = e.target.value.replace(/\D/g, "");
@@ -267,6 +272,9 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
                       <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400"><Lock size={13} /></span>
                       <input
                         autoComplete="cc-csc" type="password" maxLength={3} dir="ltr"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        placeholder="•••"
                         value={fields.cvv}
                         onFocus={() => setFlipped(true)}
                         onBlur={() => setFlipped(false)}
