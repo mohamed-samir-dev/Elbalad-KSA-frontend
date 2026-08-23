@@ -8,17 +8,49 @@ import { IoGridOutline, IoChevronBack, IoChevronForward, IoHome } from "react-ic
 
 const PS_CATEGORIES = ["ps5", "ps4", "xbox", "controller", "gaming-accessories", "بلاي ستيشن", "بلاستيشن وملحقاته"];
 
+const FILTERS = [
+  { key: "all", label: "الكل" },
+  { key: "ps5", label: "PS5" },
+  { key: "ps4", label: "PS4" },
+];
+
+function isPS(p: Product) {
+  const cat = (p.category ?? "").toLowerCase();
+  const sub = (p.subCategory ?? "").toLowerCase();
+  return PS_CATEGORIES.some((c) => cat.includes(c.toLowerCase()) || sub.includes(c.toLowerCase()));
+}
+
+function matchFilter(p: Product, key: string) {
+  const cat  = (p.category    ?? "").toLowerCase();
+  const sub  = (p.subCategory ?? "").toLowerCase();
+  const name = (p.name        ?? "").toLowerCase();
+  if (key === "ps5") return cat.includes("ps5") || sub.includes("ps5") || name.includes("ps5") || name.includes("بلاي ستيشن 5");
+  if (key === "ps4") return cat.includes("ps4") || sub.includes("ps4") || name.includes("ps4") || name.includes("بلاي ستيشن 4");
+  return true;
+}
+
 export default function PlaystationClient({ initialProducts }: { initialProducts: Product[] }) {
   const [page, setPage] = useState(1);
+  const [activeFilter, setActiveFilter] = useState("all");
   const ITEMS_PER_PAGE = 12;
 
-  const products = useMemo(
-    () => initialProducts.filter((p) => PS_CATEGORIES.includes(p.category ?? "")),
+  const allProducts = useMemo(
+    () => initialProducts.filter(isPS),
     [initialProducts]
+  );
+
+  const products = useMemo(
+    () => activeFilter === "all" ? allProducts : allProducts.filter((p) => matchFilter(p, activeFilter)),
+    [allProducts, activeFilter]
   );
 
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const label = "أجهزة بلاي ستيشن";
+
+  function handleFilter(key: string) {
+    setActiveFilter(key);
+    setPage(1);
+  }
 
 
 
@@ -56,6 +88,29 @@ export default function PlaystationClient({ initialProducts }: { initialProducts
                 </div>
               )}
             </div>
+          </div>
+          {/* Filter Pills inside hero */}
+          <div className="relative z-10 hidden justify-center gap-2 pb-8">
+            {FILTERS.map((f) => {
+              const count = f.key === "all" ? allProducts.length : allProducts.filter((p) => matchFilter(p, f.key)).length;
+              const active = activeFilter === f.key;
+              return (
+                <button
+                  key={f.key}
+                  onClick={() => handleFilter(f.key)}
+                  className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 ${
+                    active
+                      ? "bg-white text-[#1F7A8C] shadow-lg scale-105"
+                      : "bg-white/15 text-white border border-white/30 hover:bg-white/25"
+                  }`}
+                >
+                  {f.label}
+                  <span className={`text-[11px] font-black px-1.5 py-0.5 rounded-full ${
+                    active ? "bg-[#1F7A8C]/10 text-[#1F7A8C]" : "bg-white/20 text-white"
+                  }`}>{count}</span>
+                </button>
+              );
+            })}
           </div>
           <div className="absolute bottom-0 left-0 right-0"><svg viewBox="0 0 1440 50" fill="none" className="w-full" preserveAspectRatio="none"><path d="M0,25 C360,50 720,0 1080,25 C1260,37 1380,30 1440,25 L1440,50 L0,50 Z" fill="#f5f7f9" /></svg></div>
         </div>

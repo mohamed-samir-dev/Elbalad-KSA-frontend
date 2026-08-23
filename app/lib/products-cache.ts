@@ -13,7 +13,7 @@ export const getCachedProducts = unstable_cache(
     }
   },
   ["all-products"],
-  { revalidate: false, tags: ["products"] }
+  { revalidate: 60, tags: ["products"] }
 );
 
 export const getCachedProduct = unstable_cache(
