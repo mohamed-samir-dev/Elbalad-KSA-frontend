@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { getBackend, forwardCookies } from "../../_lib";
 
@@ -24,5 +25,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const res = await fetch(`${getBackend()}/api/admin/products/${id}`, forwardCookies(req, { method: "DELETE" }));
   const text = await res.text();
   const data = text ? JSON.parse(text) : {};
+  if (res.ok) revalidateTag("products");
   return NextResponse.json(data, { status: res.status });
 }
