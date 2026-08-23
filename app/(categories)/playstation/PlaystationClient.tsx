@@ -6,7 +6,7 @@ import ProductCard from "../../components/products/ProductCard";
 import type { Product } from "../../components/products/types";
 import { IoGridOutline, IoChevronBack, IoChevronForward, IoHome } from "react-icons/io5";
 
-const PS_CATEGORIES = ["ps5", "ps4", "xbox", "controller", "gaming-accessories", "بلاي ستيشن"];
+const PS_CATEGORIES = ["ps5", "ps4", "xbox", "controller", "gaming-accessories", "بلاي ستيشن", "بلاستيشن وملحقاته"];
 
 export default function PlaystationClient({ initialProducts }: { initialProducts: Product[] }) {
   const [page, setPage] = useState(1);

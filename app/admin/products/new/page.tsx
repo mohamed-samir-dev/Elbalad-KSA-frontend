@@ -18,13 +18,23 @@ export default function NewProductPage() {
   const [gallery, setGallery] = useState<{ mode: "upload" | "url"; file?: File; preview?: string; url?: string }[]>([]);
   const [saving, setSaving] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
+  const [subCategories, setSubCategories] = useState<string[]>([]);
+  const [subCategory, setSubCategory] = useState("");
   const imageInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch("/api/admin/categories", { credentials: "include" })
-      .then((r) => r.json())
-      .then((data: string[]) => setCategories(data.filter(Boolean).sort()))
+    Promise.all([
+      fetch("/api/admin/main-categories/extra", { credentials: "include" }).then((r) => r.json()),
+      fetch("/api/admin/sub-categories", { credentials: "include" }).then((r) => r.json()),
+      fetch("/api/admin/sub-categories/extra", { credentials: "include" }).then((r) => r.json()),
+    ])
+      .then(([mainCats, fromProducts, extra]: [{name:string}[], {name:string}[], {name:string}[]]) => {
+        setCategories(mainCats.map((c) => c.name).filter(Boolean).sort());
+        const names = new Set(fromProducts.map((s) => s.name));
+        const all = [...fromProducts, ...extra.filter((s) => !names.has(s.name))];
+        setSubCategories(all.map((s) => s.name).filter(Boolean).sort());
+      })
       .catch(() => {});
   }, []);
 
@@ -75,6 +85,7 @@ export default function NewProductPage() {
       fd.append("originalPrice", originalPrice);
       fd.append("salePrice", salePrice);
       fd.append("category", category);
+      fd.append("subCategory", subCategory);
       fd.append("inStock", String(inStock));
       fd.append("description", description);
 
@@ -228,10 +239,19 @@ export default function NewProductPage() {
 
       {/* Category */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">التصنيف</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">التصنيف الرئيسي</label>
         <select value={category} onChange={(e) => setCategory(e.target.value)} className={inputCls}>
           <option value="">-- اختر تصنيف --</option>
           {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
+      </div>
+
+      {/* Sub Category */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">التصنيف الفرعي</label>
+        <select value={subCategory} onChange={(e) => setSubCategory(e.target.value)} className={inputCls}>
+          <option value="">-- اختر تصنيف فرعي --</option>
+          {subCategories.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>
 

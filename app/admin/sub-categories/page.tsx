@@ -88,7 +88,7 @@ export default function SubCategoriesPage() {
       body: JSON.stringify({ name: addName }),
     });
     setAddLoading(false);
-    if (!res.ok) { const d = await res.json(); return toast.error(d.error); }
+    if (!res.ok) { const d = await res.json().catch(() => ({})); return toast.error(d.error ?? "حدث خطأ"); }
     toast.success(`تم إضافة "${addName}" بنجاح 🎉`);
     setShowAddModal(false);
     setAddName("");
