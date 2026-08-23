@@ -151,10 +151,8 @@ export default function ProductGrid({
       .slice(0, max)
       .map((s) => s.category)
       .filter((c, idx, arr) => arr.indexOf(c) === idx)
-      .filter((c) => allCats.includes(c));
-    // الكاتيجوريز الجديدة اللي ما عندها setting تظهر في الآخر
-    const unconfigured = allCats.filter((c) => !settings.some((s) => s.category === c) && c !== "أخرى");
-    return [...orderedCats, ...unconfigured];
+      .filter((c) => allCats.some((ac) => ac === c || ac.trim() === c.trim()));
+    return orderedCats;
   }, [grouped, homeConfig]);
 
   if (!products.length) return <p className="text-center text-gray-400 py-10">لا توجد منتجات حالياً</p>;

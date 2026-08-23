@@ -17,6 +17,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     body: formData,
   }));
   const data = await res.json();
+  if (res.ok) revalidateTag("products");
   return NextResponse.json(data, { status: res.status });
 }
 

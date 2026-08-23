@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -7,6 +7,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
   const tag = req.nextUrl.searchParams.get("tag") || "products";
-  revalidateTag(tag, {});
+  revalidateTag(tag);
+  if (tag === "home-settings") {
+    revalidateTag("products");
+    revalidatePath("/");
+  }
   return NextResponse.json({ revalidated: true, tag });
 }
