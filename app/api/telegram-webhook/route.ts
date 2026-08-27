@@ -9,6 +9,10 @@ export async function POST(req: NextRequest) {
   const text = message.text;
   const fromName = message.from?.first_name ?? "مجهول";
 
+  // إذا لم يكن هناك نص (صورة، ملف، إلخ) نتجاهل
+  if (!text) return NextResponse.json({ ok: true });
+
+  // نُرسل لجميع الموظفين ما عدا المُرسِل (Telegram يعرض رسالته له تلقائياً)
   const chatIds = (process.env.TELEGRAM_CHAT_ID ?? "")
     .split(",")
     .map((id) => id.trim())
