@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Tajawal } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
 import Footer from "./components/Footer";
@@ -100,6 +101,18 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ar" dir="rtl">
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18394753580"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-18394753580');`}
+        </Script>
+      </head>
       <body className={`antialiased ${tajawal.className}`} suppressHydrationWarning>
         <ClientLayout footer={<Footer />}>{children}</ClientLayout>
       </body>
