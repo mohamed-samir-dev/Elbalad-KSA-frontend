@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getBackend } from "../_lib";
+import { getBackend, getAdminToken } from "../_lib";
 
 export async function GET(req: NextRequest) {
   try {
+    const token = getAdminToken(req);
     const res = await fetch(`${getBackend()}/api/admin/orders`, {
-      headers: { cookie: req.headers.get("cookie") || "" },
+      headers: { cookie: `admin_token=${token}` },
     });
     if (!res.ok) {
       return NextResponse.json({ error: `Backend returned ${res.status}` }, { status: res.status });

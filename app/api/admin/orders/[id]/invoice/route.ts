@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getBackend } from "../../../_lib";
+import { getBackend, getAdminToken } from "../../../_lib";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const cookie = req.headers.get("cookie") || "";
+  const token = getAdminToken(req);
   const [orderRes, companyRes] = await Promise.all([
-    fetch(`${getBackend()}/api/admin/orders/${id}`, { headers: { cookie } }),
+    fetch(`${getBackend()}/api/admin/orders/${id}`, { headers: { cookie: `admin_token=${token}` } }),
     fetch(`${getBackend()}/api/admin/company`),
   ]);
   const order = await orderRes.json();

@@ -146,7 +146,7 @@ export default function VerifyPage() {
     if (!id) return;
     setDbOrderId(id);
     pollRef.current = setInterval(async () => {
-      const res = await fetch(`/api/admin/orders/${id}`);
+      const res = await fetch(`/api/orders/${id}/status`);
       if (!res.ok) return;
       const data = await res.json();
       if (data.status === "confirmed") { clearInterval(pollRef.current!); setConfirmed(true); }
