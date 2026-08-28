@@ -50,7 +50,7 @@ export default function PrintOrderPage() {
       html, body { background-color: white !important; background: white !important; }
       body { font-size: 9px !important; }
       td, th { padding: 2px 4px !important; }
-      img[alt="header"] { width: 100% !important; height: auto !important; max-height: 120px !important; object-fit: contain; }
+      img[alt="header"] { width: 100% !important; height: auto !important; object-fit: cover !important; display: block !important; }
       img[alt="footer"] { width: 100% !important; height: auto !important; max-height: 90px !important; object-fit: contain; }
       .installments-section { margin-top: 8px !important; }
       p { margin: 0 !important; line-height: 1.4 !important; }
@@ -63,7 +63,7 @@ export default function PrintOrderPage() {
   const date = new Date(order.createdAt).toLocaleDateString("en-GB");
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", padding: 24, maxWidth: 900, margin: "0 auto", position: "relative", backgroundColor: "white", minHeight: "100vh", background: "white" }}>
+    <div style={{ fontFamily: "Arial, sans-serif", padding: 24, width: "100%", margin: "0 auto", position: "relative", backgroundColor: "white", minHeight: "100vh", background: "white" }}>
       {company.stamp && (
         <img
           src={company.stamp}
@@ -80,7 +80,7 @@ export default function PrintOrderPage() {
         />
       )}
       <style>{style}</style>
-      {company.header && <img src={company.header} alt="header" style={{ width: "100%", marginBottom: 24 }} />}
+      {company.header && <img src={company.header} alt="header" style={{ width: "100%", marginLeft: -24, marginRight: -24, marginBottom: 24, display: "block", objectFit: "cover" }} />}
 
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, fontSize: 13, fontWeight: 600 }}>
         <span>{date}</span>
