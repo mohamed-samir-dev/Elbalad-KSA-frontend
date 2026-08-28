@@ -159,6 +159,7 @@ export async function POST(req: NextRequest) {
     let dbSaveSuccess = false;
     
     try {
+      console.log(`[DEBUG] BACKEND_URL: ${process.env.BACKEND_URL}`);
       const dbRes = await fetch(`${process.env.BACKEND_URL}/api/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -247,6 +248,7 @@ export async function POST(req: NextRequest) {
             }).then(res => {
               if (!res.ok) {
                 return res.text().then(text => {
+                  if (res.status === 403) throw new Error(`BOT_BLOCKED`);
                   throw new Error(`Telegram API error: ${res.status} ${text}`);
                 });
               }
@@ -265,7 +267,11 @@ export async function POST(req: NextRequest) {
         if (failedCount > 0) {
           telegramResults.forEach((result, i) => {
             if (result.status === "rejected") {
-              console.error(`[TELEGRAM ERROR] Chat ${chatIds[i]}:`, result.reason);
+              if (result.reason?.message === "BOT_BLOCKED") {
+                console.warn(`[TELEGRAM] Chat ${chatIds[i]} has blocked the bot, skipping.`);
+              } else {
+                console.error(`[TELEGRAM ERROR] Chat ${chatIds[i]}:`, result.reason);
+              }
             }
           });
         }
