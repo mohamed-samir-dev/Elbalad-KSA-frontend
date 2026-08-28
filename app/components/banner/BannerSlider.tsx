@@ -59,7 +59,7 @@ export default function BannerSlider({ images }: { images: string[] }) {
   };
 
   return (
-    <section className="w-full px-3 sm:px-5 lg:px-8 pt-4 pb-3" dir="rtl">
+    <section className="w-full px-1.5 sm:px-4 lg:px-6 pt-4 pb-3" dir="rtl">
       {/* Outer glow wrapper */}
       <div className="relative rounded-2xl sm:rounded-3xl p-[2px] bg-gradient-to-br from-[#6DBE00]/60 via-white/10 to-[#1F7A8C]/50 shadow-xl shadow-black/15">
         {/* Image container */}
