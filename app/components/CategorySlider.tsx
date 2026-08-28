@@ -1,96 +1,135 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+
+const SWIPE_THRESHOLD = 50;
+
+const CATEGORY_DESC: Record<string, string> = {
+  "ابل ايفون 17 برو ماكس": "أقوى ايفون على الإطلاق",
+  "ابل ايفون 17 برو": "أداء احترافي بتصميم أنيق",
+  "ابل ايفون 17 اير": "رفيع وخفيف بقوة استثنائية",
+  "ابل ايفون 17": "تجربة ايفون بسعر مناسب",
+  "ابل ايفون 16 برو ماكس": "كاميرا احترافية وشاشة مذهلة",
+  "ايفون 16 برو": "تصوير سينمائي بأعلى مستوى",
+  "ايفون 16 بلس": "شاشة كبيرة وبطارية قوية",
+  "ايفون 16 ": "أحدث جيل من ايفون",
+  "ابل ايفون 15 برو ماكس": "تيتانيوم وكاميرا لا مثيل لها",
+  "ابل ايفون 15 بلس": "شاشة ضخمة وأداء سلس",
+  "ابل ايفون 14 برو ماكس": "كلاسيك بأداء لا يُنافس",
+  "سامسونج جالاكسي S26": "أحدث فلاجشيب من سامسونج",
+  "سامسونج جالاكسي S25": "ذكاء اصطناعي في كل لحظة",
+  "سامسونج جالاكسي S24": "شاشة AMOLED وأداء خارق",
+  "سامسونج جلاكسي S23 الترا": "قلم S-Pen وكاميرا 200MP",
+  "بلاستيشن وملحقاته": "العب بلا حدود",
+  "سماعات": "صوت نقي في كل مكان",
+  "ساعات ابل": "صحتك على معصمك",
+  "اكسسورات": "إكمالات تليق بأجهزتك",
+  "بطاريات متنقله": "طاقة دائمة أينما كنت",
+  "monitor": "وضوح لا يُضاهى",
+  "tablet": "إنتاجية وترفيه في جهاز واحد",
+  "ماك بوك إير": "خفيف وسريع للإبداع",
+};
+
+function getCategoryDesc(name: string): string {
+  return CATEGORY_DESC[name.trim()] ?? "تسوق أفضل المنتجات";
+}
 
 type Category = { name: string; count: number; image: string; href: string };
 
 export default function CategorySlider({ categories }: { categories: Category[] }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [showLeft, setShowLeft] = useState(false);
-  const [showRight, setShowRight] = useState(true);
-
-  const checkScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setShowLeft(el.scrollLeft > 5);
-    setShowRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 5);
-  };
-
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => { checkScroll(); }, []);
+  const [current, setCurrent] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const touchStart = useRef(0);
 
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setIsVisible(true); obs.disconnect(); }
-    }, { threshold: 0.2 });
-    obs.observe(el);
-    return () => obs.disconnect();
+    const update = () => {
+      if (window.innerWidth < 640) setItemsPerPage(2);
+      else if (window.innerWidth < 1024) setItemsPerPage(4);
+      else setItemsPerPage(5);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
-  const scroll = (dir: number) => {
-    scrollRef.current?.scrollBy({ left: dir * 250, behavior: "smooth" });
+  const total = Math.ceil(categories.length / itemsPerPage);
+  const groups = Array.from({ length: total }, (_, i) =>
+    categories.slice(i * itemsPerPage, (i + 1) * itemsPerPage)
+  );
+
+  const goTo = useCallback((i: number) => setCurrent((i + total) % total), [total]);
+
+  const onTouchStart = (e: React.TouchEvent) => { touchStart.current = e.touches[0].clientX; };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const diff = touchStart.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > SWIPE_THRESHOLD) goTo(current + (diff > 0 ? 1 : -1));
   };
 
+  if (!categories.length) return null;
+
   return (
-    <div ref={sectionRef} className="relative w-full" dir="rtl">
-      {showRight && (
-        <button onClick={() => scroll(-1)} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[#155E6F] hover:bg-[#155E6F] hover:text-white transition-colors" aria-label="التالي">
-          ‹
-        </button>
-      )}
-      {showLeft && (
-        <button onClick={() => scroll(1)} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[#155E6F] hover:bg-[#155E6F] hover:text-white transition-colors" aria-label="السابق">
-          ›
-        </button>
-      )}
+    <div className="relative" dir="rtl">
+
+      {/* Cards */}
       <div
-        ref={scrollRef}
-        onScroll={checkScroll}
-        className="flex gap-3 overflow-x-auto scrollbar-hide px-1 py-2"
+        className="overflow-hidden"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
-        {categories.map((cat, i) => (
-          <Link
-            key={cat.name}
-            href={cat.href}
-            className="shrink-0 w-[110px] sm:w-[130px]"
-            style={{
-              opacity: isVisible ? 1 : 0,
-              transform: isVisible ? "translateX(0)" : "translateX(40px)",
-              transition: `opacity 0.5s ease ${i * 0.07}s, transform 0.5s ease ${i * 0.07}s`,
-            }}
-          >
-            <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-[#f0faf5] to-white p-3 sm:p-4 flex flex-col items-center gap-2 hover:border-[#6DBE00] hover:shadow-lg transition-all duration-200">
-              <div className="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-xl bg-white shadow-sm relative overflow-hidden border border-gray-50">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
+          {groups[current].map((cat) => (
+            <Link key={cat.name} href={cat.href} className="group block">
+              <div className="relative rounded-lg overflow-hidden bg-gray-200 aspect-[3/4] sm:aspect-[4/5]">
+                {/* Image */}
                 {cat.image ? (
                   <Image
                     src={cat.image}
                     alt={cat.name}
                     fill
                     unoptimized
-                    className="object-contain p-1.5"
-                    sizes="72px"
+                    className="object-cover object-center transition-transform duration-500 group-hover:scale-105 scale-90"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xl">🛍️</div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#155E6F] to-[#1F7A8C]" />
                 )}
+
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+
+                {/* Content */}
+                <div className="absolute bottom-0 inset-x-0 p-2 sm:p-3">
+                  <h3 className="text-white font-bold text-xs sm:text-sm leading-tight">
+                    {cat.name}
+                  </h3>
+                  <p className="text-white/70 text-[10px] sm:text-xs mt-0.5 leading-tight">
+                    {getCategoryDesc(cat.name)}
+                  </p>
+                  <p className="text-white/50 text-[9px] sm:text-[11px] mt-0.5">
+                    {cat.count} منتج
+                  </p>
+                </div>
               </div>
-              <p className="text-[11px] sm:text-xs font-semibold text-[#155E6F] text-center leading-tight line-clamp-2 w-full">
-                {cat.name}
-              </p>
-              {cat.count > 0 && (
-                <span className="text-[10px] text-white bg-[#6DBE00] rounded-full px-2 py-[1px] font-medium">
-                  {cat.count} منتج
-                </span>
-              )}
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
+
+      {/* Dots */}
+      {total > 1 && (
+        <div className="flex justify-center gap-1.5 mt-4">
+          {Array.from({ length: total }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className={`rounded-full transition-all duration-300 ${
+                i === current ? "w-5 h-2 bg-[#155E6F]" : "w-2 h-2 bg-gray-300 hover:bg-gray-400"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

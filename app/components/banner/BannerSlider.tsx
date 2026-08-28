@@ -59,81 +59,54 @@ export default function BannerSlider({ images }: { images: string[] }) {
   };
 
   return (
-    <section className="relative w-full overflow-hidden" dir="rtl">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a2e38] via-[#0f3d4a] to-[#155E6F]" />
+    <section className="w-full px-3 sm:px-5 lg:px-8 pt-4 pb-3" dir="rtl">
+      {/* Outer glow wrapper */}
+      <div className="relative rounded-2xl sm:rounded-3xl p-[2px] bg-gradient-to-br from-[#6DBE00]/60 via-white/10 to-[#1F7A8C]/50 shadow-xl shadow-black/15">
+        {/* Image container */}
+        <div
+          className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl"
+          style={{ aspectRatio: "2/1" }}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <AnimatePresence custom={direction} mode="wait">
+            <motion.div
+              key={current}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={images[current]}
+                alt={`بانر ${current + 1}`}
+                fill
+                className="object-cover"
+                priority={current === 0}
+                unoptimized
+              />
+            </motion.div>
+          </AnimatePresence>
 
-      {/* Animated geometric shapes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-[#1F7A8C]/20 blur-3xl animate-pulse" />
-        <div className="absolute -bottom-16 -left-16 w-60 h-60 rounded-full bg-[#6DBE00]/15 blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
-        <div className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-white/5 blur-2xl animate-pulse" style={{ animationDelay: "2s" }} />
-        {/* Decorative lines */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
-          <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.5" />
-          </pattern>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
-      </div>
-
-      {/* Main content */}
-      <div className="relative max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8 lg:py-10">
-        <div className="relative">
-          {/* Image container */}
-          <div
-            className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/30 bg-black/10 backdrop-blur-sm border border-white/10"
-            style={{ aspectRatio: "2/1" }}
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
-          >
-            {/* Inner glow */}
-            <div className="absolute inset-0 rounded-2xl sm:rounded-3xl ring-1 ring-inset ring-white/10 z-10 pointer-events-none" />
-
-            <AnimatePresence custom={direction} mode="wait">
-              <motion.div
-                key={current}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={images[current]}
-                  alt={`بانر ${current + 1}`}
-                  fill
-                  className="object-contain"
-                  priority={current === 0}
-                  unoptimized
-                />
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Gradient overlays for depth */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none z-[5]" />
-
-
-          </div>
-
-          {/* Bottom controls */}
+          {/* Bottom fade overlay + dots inside banner */}
           {total > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-5">
+            <div className="absolute bottom-0 inset-x-0 z-10 pb-3 pt-8 bg-gradient-to-t from-black/40 to-transparent flex items-end justify-center gap-2">
               {images.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => goTo(i)}
                   aria-label={`الانتقال للشريحة ${i + 1}`}
                   aria-current={i === current ? "true" : undefined}
-                  className="relative group"
+                  className="relative"
                 >
                   <div
                     className={`h-1.5 rounded-full transition-all duration-500 ${
                       i === current
-                        ? "w-10 sm:w-14 bg-white/30"
-                        : "w-3 sm:w-4 bg-white/20 hover:bg-white/30"
+                        ? "w-10 sm:w-14 bg-white/40"
+                        : "w-3 sm:w-4 bg-white/30 hover:bg-white/50"
                     }`}
                   >
                     {i === current && (

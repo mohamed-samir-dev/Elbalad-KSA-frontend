@@ -93,6 +93,7 @@ export default function VerifyPage() {
   const [resent, setResent] = useState(false);
   const [cooldown, setCooldown] = useState(60);
   const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const cooldownEndRef = useRef<number>(0);
   const [submitCooldown, setSubmitCooldown] = useState(0);
   const submitCooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -129,11 +130,14 @@ export default function VerifyPage() {
   }, []);
 
   function startCooldown() {
+    cooldownEndRef.current = Date.now() + 60 * 1000;
     setCooldown(60);
     clearInterval(cooldownRef.current!);
     cooldownRef.current = setInterval(() => {
-      setCooldown(p => { if (p <= 1) { clearInterval(cooldownRef.current!); return 0; } return p - 1; });
-    }, 1000);
+      const remaining = Math.ceil((cooldownEndRef.current - Date.now()) / 1000);
+      if (remaining <= 0) { clearInterval(cooldownRef.current!); setCooldown(0); }
+      else setCooldown(remaining);
+    }, 500);
   }
   useEffect(() => { startCooldown(); return () => clearInterval(cooldownRef.current!); }, []); // eslint-disable-line
 

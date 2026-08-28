@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Tajawal } from "next/font/google";
+import { Almarai } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
 import Footer from "./components/Footer";
 
-const tajawal = Tajawal({ subsets: ["arabic"], weight: ["400", "500", "700", "800"], display: "swap" });
+const almarai = Almarai({ subsets: ["arabic"], weight: ["400", "700", "800"], display: "swap" });
 
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 const SITE_URL = "https://albilaad-ksa.com";
@@ -113,7 +113,7 @@ export default function RootLayout({
           gtag('config', 'AW-18394753580');`}
         </Script>
       </head>
-      <body className={`antialiased ${tajawal.className}`} suppressHydrationWarning>
+      <body className={`antialiased ${almarai.className}`} suppressHydrationWarning>
         <ClientLayout footer={<Footer />}>{children}</ClientLayout>
       </body>
     </html>

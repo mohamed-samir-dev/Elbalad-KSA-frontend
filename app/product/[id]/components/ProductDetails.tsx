@@ -1,16 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { IoCheckmarkCircle, IoDocumentTextOutline, IoListOutline, IoCardOutline } from "react-icons/io5";
+import { Icon } from "@iconify/react";
 import type { Product } from "../../../components/products/types";
 
 const fmt = (n: number) => n.toLocaleString("ar-SA");
 
 const specLabels: [keyof NonNullable<Product["specs"]>, string, string][] = [
-  ["screen", "الشاشة", "📱"], ["processor", "المعالج", "⚡"], ["ram", "الرام", "🧠"], ["storage", "التخزين", "💾"],
-  ["rearCamera", "الكاميرا الخلفية", "📸"], ["frontCamera", "الكاميرا الأمامية", "🤳"],
-  ["battery", "البطارية", "🔋"], ["batteryLife", "عمر البطارية", "⏱"], ["charging", "الشحن", "🔌"],
-  ["os", "نظام التشغيل", "💻"], ["extras", "مميزات إضافية", "✨"],
+  ["screen",       "الشاشة",            "solar:smartphone-2-bold"],
+  ["processor",    "المعالج",           "solar:cpu-bolt-bold"],
+  ["ram",          "الرام",             "solar:database-bold"],
+  ["storage",      "التخزين",           "solar:hard-drive-bold"],
+  ["rearCamera",   "الكاميرا الخلفية",  "solar:camera-bold"],
+  ["frontCamera",  "الكاميرا الأمامية", "solar:user-rounded-bold"],
+  ["battery",      "البطارية",          "solar:battery-full-bold"],
+  ["batteryLife",  "عمر البطارية",      "solar:clock-circle-bold"],
+  ["charging",     "الشحن",             "solar:bolt-bold"],
+  ["os",           "نظام التشغيل",      "solar:settings-bold"],
+  ["extras",       "مميزات إضافية",     "solar:star-bold"],
 ];
 
 interface ProductDetailsProps {
@@ -21,17 +28,17 @@ interface ProductDetailsProps {
 
 type Tab = "specs" | "installment" | "description";
 
-const tabMeta: Record<Tab, { icon: typeof IoListOutline; label: string }> = {
-  specs: { icon: IoListOutline, label: "المواصفات" },
-  description: { icon: IoDocumentTextOutline, label: "الوصف" },
-  installment: { icon: IoCardOutline, label: "التقسيط" },
+const tabMeta: Record<Tab, { icon: string; label: string; color: string }> = {
+  specs:       { icon: "solar:list-bold",          label: "المواصفات", color: "#1F7A8C" },
+  description: { icon: "solar:document-text-bold", label: "الوصف",     color: "#6DBE00" },
+  installment: { icon: "solar:card-bold",          label: "التقسيط",   color: "#f59e0b" },
 };
 
 export default function ProductDetails({ installment, description, specs }: ProductDetailsProps) {
   const hasSpecs = specs && Object.values(specs).some(Boolean);
 
   const tabs: { key: Tab; show: boolean }[] = [
-    { key: "specs", show: !!hasSpecs },
+    { key: "specs",       show: !!hasSpecs },
     { key: "description", show: !!description },
     { key: "installment", show: !!installment?.available },
   ];
@@ -41,9 +48,9 @@ export default function ProductDetails({ installment, description, specs }: Prod
   if (!visibleTabs.length) return null;
 
   return (
-    <div className="mt-6 sm:mt-10 bg-white rounded-2xl sm:rounded-3xl shadow-lg shadow-black/[.04] border border-gray-100/80 overflow-hidden">
-      {/* Tabs */}
-      <div className="flex border-b border-gray-100 overflow-x-auto scrollbar-hide">
+    <div className="mt-6 sm:mt-10" dir="rtl">
+      {/* Tab buttons */}
+      <div className="flex gap-2 sm:gap-3 mb-4 overflow-x-auto scrollbar-hide pb-1">
         {visibleTabs.map((t) => {
           const m = tabMeta[t.key];
           const isActive = active === t.key;
@@ -51,93 +58,150 @@ export default function ProductDetails({ installment, description, specs }: Prod
             <button
               key={t.key}
               onClick={() => setActive(t.key)}
-              className={`flex-1 min-w-[110px] flex items-center justify-center gap-2 py-4 sm:py-5 text-xs sm:text-sm font-bold transition-all relative ${isActive ? "text-[#1F7A8C]" : "text-gray-400 hover:text-gray-600"}`}
+              className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 border ${
+                isActive
+                  ? "bg-[#155E6F] text-white border-[#155E6F] shadow-md shadow-[#155E6F]/20"
+                  : "bg-white text-gray-500 border-gray-200 hover:border-[#155E6F]/40 hover:text-[#155E6F]"
+              }`}
             >
-              <m.icon size={16} />
+              <Icon icon={m.icon} width={15} />
               {m.label}
-              {isActive && <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-[3px] bg-[#1F7A8C] rounded-full" />}
             </button>
           );
         })}
       </div>
 
-      {/* Content */}
-      <div className="p-4 sm:p-7">
-        {/* Specs */}
+      {/* Panel */}
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+
+        {/* ── Specs ── */}
         {active === "specs" && hasSpecs && (
-          <div className="rounded-2xl overflow-hidden border border-gray-100">
-            {specLabels.map(([key, label, emoji], i) =>
-              specs[key] ? (
-                <div key={key} className={`flex items-center text-xs sm:text-sm px-4 sm:px-5 py-3.5 sm:py-4 gap-3 ${i % 2 === 0 ? "bg-[#f8fafb]" : "bg-white"}`}>
-                  <span className="text-sm">{emoji}</span>
-                  <span className="text-gray-400 w-28 sm:w-36 shrink-0 font-semibold">{label}</span>
-                  <span className="text-gray-800 flex-1 min-w-0 break-words font-semibold">{specs[key]}</span>
-                </div>
-              ) : null
-            )}
+          <div>
+            {/* header */}
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 bg-gradient-to-l from-[#f0fdf9] to-white">
+              <div className="w-9 h-9 rounded-xl bg-[#155E6F]/10 flex items-center justify-center">
+                <Icon icon="solar:list-bold" width={18} className="text-[#155E6F]" />
+              </div>
+              <div>
+                <p className="text-sm font-extrabold text-gray-800">المواصفات التقنية</p>
+                <p className="text-[11px] text-gray-400">تفاصيل كاملة للمنتج</p>
+              </div>
+            </div>
+            {/* rows */}
+            <div className="divide-y divide-gray-50">
+              {specLabels.map(([key, label, iconName]) =>
+                specs[key] ? (
+                  <div key={key} className="flex items-center gap-3 px-5 py-3.5 hover:bg-[#f8fafb] transition-colors">
+                    <div className="w-8 h-8 rounded-lg bg-[#155E6F]/8 flex items-center justify-center shrink-0">
+                      <Icon icon={iconName} width={15} className="text-[#1F7A8C]" />
+                    </div>
+                    <span className="text-[11px] sm:text-xs text-gray-400 w-24 sm:w-32 shrink-0 font-semibold">{label}</span>
+                    <span className="text-xs sm:text-sm text-gray-800 flex-1 font-semibold leading-snug">{specs[key]}</span>
+                  </div>
+                ) : null
+              )}
+            </div>
           </div>
         )}
 
-        {/* Description */}
+        {/* ── Description ── */}
         {active === "description" && description && (() => {
           const lines = description.split("\n").map(l => l.trim()).filter(Boolean);
           const title = lines[0];
           const items = lines.slice(1);
           return (
             <div>
-              {title && (
-                <div className="flex items-center gap-3 mb-5 pb-4 border-b border-gray-100">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1F7A8C]/12 to-[#1F7A8C]/5 flex items-center justify-center">
-                    <IoDocumentTextOutline size={18} className="text-[#1F7A8C]" />
-                  </div>
-                  <h3 className="text-sm sm:text-base font-black text-gray-800">{title}</h3>
+              {/* header */}
+              <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 bg-gradient-to-l from-[#f4fde8] to-white">
+                <div className="w-9 h-9 rounded-xl bg-[#6DBE00]/15 flex items-center justify-center">
+                  <Icon icon="solar:document-text-bold" width={18} className="text-[#6DBE00]" />
                 </div>
-              )}
+                <div>
+                  <p className="text-sm font-extrabold text-gray-800">{title || "وصف المنتج"}</p>
+                  <p className="text-[11px] text-gray-400">مميزات وتفاصيل</p>
+                </div>
+              </div>
+              {/* items */}
               {items.length > 0 && (
-                <div className="flex flex-col gap-2">
+                <div className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {items.map((line, i) => (
-                    <div key={i} className={`flex items-center gap-3 px-4 py-3 sm:py-3.5 rounded-xl ${i % 2 === 0 ? "bg-[#f8fafb]" : "bg-white"}`}>
-                      <IoCheckmarkCircle size={16} className="text-[#1F7A8C] shrink-0" />
-                      <span className="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">{line.replace(/^[•\-\*]\s*/, "")}</span>
+                    <div key={i} className="flex items-start gap-3 bg-[#f8fafb] rounded-xl px-4 py-3 border border-gray-100">
+                      <div className="w-6 h-6 rounded-lg bg-[#6DBE00]/15 flex items-center justify-center shrink-0 mt-0.5">
+                        <Icon icon="solar:check-circle-bold" width={14} className="text-[#6DBE00]" />
+                      </div>
+                      <span className="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">
+                        {line.replace(/^[•\-\*]\s*/, "")}
+                      </span>
                     </div>
                   ))}
                 </div>
               )}
-              <div className="mt-5 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 text-center">
-                <p className="text-[10px] sm:text-xs font-bold text-amber-700">⚠️ عدم استيفاء أي من الشروط أعلاه قد يؤدي إلى رفض الطلب</p>
+              {/* warning */}
+              <div className="mx-4 sm:mx-5 mb-5 flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
+                <Icon icon="solar:danger-triangle-bold" width={18} className="text-amber-500 shrink-0" />
+                <p className="text-[11px] sm:text-xs font-semibold text-amber-700">عدم استيفاء أي من الشروط أعلاه قد يؤدي إلى رفض الطلب</p>
               </div>
             </div>
           );
         })()}
 
-        {/* Installment */}
+        {/* ── Installment ── */}
         {active === "installment" && installment?.available && (
-          <div className="space-y-5">
-            <div className="bg-gradient-to-l from-[#f0fbe4] to-[#f7fdf0] rounded-2xl p-5 border border-[#7CC043]/10">
-              <p className="text-sm sm:text-base font-bold text-[#3d6b1a]">
-                احصل عليه بأقساط شهرية مريحة
-                {installment.downPayment ? ` • مقدم ${fmt(installment.downPayment)} ر.س` : ""}
-              </p>
-              {installment.note && <p className="text-xs text-[#7CC043] mt-2">{installment.note}</p>}
-            </div>
-            {installment.policy && (
-              <div className="text-center py-2">
-                <span className="text-xs sm:text-sm font-bold text-amber-600">♕ {installment.policy} ♕</span>
+          <div>
+            {/* header */}
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 bg-gradient-to-l from-[#fffbeb] to-white">
+              <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
+                <Icon icon="solar:card-bold" width={18} className="text-amber-500" />
               </div>
-            )}
-            {installment.conditions && installment.conditions.length > 0 && (
               <div>
-                <p className="text-xs sm:text-sm font-bold text-gray-700 mb-3">شروط التقديم</p>
-                <div className="flex flex-col gap-2.5">
-                  {installment.conditions.map((c, i) => (
-                    <div key={i} className="flex items-start gap-3 text-xs sm:text-sm text-gray-600 bg-gray-50 rounded-xl px-4 py-3">
-                      <IoCheckmarkCircle size={16} className="text-[#1F7A8C] shrink-0 mt-0.5" />
-                      <span>{c}</span>
-                    </div>
-                  ))}
+                <p className="text-sm font-extrabold text-gray-800">التقسيط الميسر</p>
+                <p className="text-[11px] text-gray-400">أقساط شهرية مريحة بدون تعقيد</p>
+              </div>
+            </div>
+
+            <div className="p-4 sm:p-5 space-y-4">
+              {/* highlight card */}
+              <div className="flex items-center gap-4 bg-gradient-to-l from-[#f0fbe4] to-[#f7fdf0] rounded-2xl p-4 border border-[#6DBE00]/20">
+                <div className="w-11 h-11 rounded-xl bg-[#6DBE00]/20 flex items-center justify-center shrink-0">
+                  <Icon icon="solar:wallet-money-bold" width={22} className="text-[#4fa800]" />
+                </div>
+                <div>
+                  <p className="text-sm font-extrabold text-[#3d6b1a]">احصل عليه الآن بالتقسيط</p>
+                  {installment.downPayment && (
+                    <p className="text-xs text-[#6DBE00] font-semibold mt-0.5">مقدم {fmt(installment.downPayment)} ر.س فقط</p>
+                  )}
+                  {installment.note && <p className="text-[11px] text-gray-500 mt-0.5">{installment.note}</p>}
                 </div>
               </div>
-            )}
+
+              {/* policy */}
+              {installment.policy && (
+                <div className="flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
+                  <Icon icon="solar:crown-bold" width={16} className="text-amber-500 shrink-0" />
+                  <span className="text-xs sm:text-sm font-bold text-amber-700">{installment.policy}</span>
+                </div>
+              )}
+
+              {/* conditions */}
+              {installment.conditions && installment.conditions.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon icon="solar:clipboard-list-bold" width={15} className="text-gray-400" />
+                    <p className="text-xs font-bold text-gray-500">شروط التقديم</p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {installment.conditions.map((c, i) => (
+                      <div key={i} className="flex items-start gap-3 bg-[#f8fafb] rounded-xl px-4 py-3 border border-gray-100">
+                        <div className="w-5 h-5 rounded-md bg-[#1F7A8C]/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <Icon icon="solar:check-circle-bold" width={13} className="text-[#1F7A8C]" />
+                        </div>
+                        <span className="text-xs sm:text-sm text-gray-600 leading-relaxed">{c}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
