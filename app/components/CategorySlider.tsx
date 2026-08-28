@@ -44,7 +44,7 @@ export default function CategorySlider({ categories }: { categories: Category[] 
 
   useEffect(() => {
     const update = () => {
-      if (window.innerWidth < 640) setItemsPerPage(2);
+      if (window.innerWidth < 640) setItemsPerPage(3);
       else if (window.innerWidth < 1024) setItemsPerPage(4);
       else setItemsPerPage(5);
     };
@@ -77,7 +77,7 @@ export default function CategorySlider({ categories }: { categories: Category[] 
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-1.5 sm:gap-3">
           {groups[current].map((cat) => (
             <Link key={cat.name} href={cat.href} className="group block">
               <div className="relative rounded-lg overflow-hidden bg-gray-200 aspect-[3/4] sm:aspect-[4/5]">
@@ -99,14 +99,14 @@ export default function CategorySlider({ categories }: { categories: Category[] 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
 
                 {/* Content */}
-                <div className="absolute bottom-0 inset-x-0 p-2 sm:p-3">
-                  <h3 className="text-white font-bold text-xs sm:text-sm leading-tight">
+                <div className="absolute bottom-0 inset-x-0 p-1.5 sm:p-3">
+                  <h3 className="text-white font-bold text-[10px] sm:text-sm leading-tight">
                     {cat.name}
                   </h3>
-                  <p className="text-white/70 text-[10px] sm:text-xs mt-0.5 leading-tight">
+                  <p className="text-white/70 text-[9px] sm:text-xs mt-0.5 leading-tight hidden sm:block">
                     {getCategoryDesc(cat.name)}
                   </p>
-                  <p className="text-white/50 text-[9px] sm:text-[11px] mt-0.5">
+                  <p className="text-white/50 text-[8px] sm:text-[11px] mt-0.5">
                     {cat.count} منتج
                   </p>
                 </div>

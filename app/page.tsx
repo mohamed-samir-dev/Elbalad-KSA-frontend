@@ -4,7 +4,7 @@ import CustomerReviews from "./components/CustomerReviews";
 import ShopByCategory from "./components/ShopByCategory";
 import { getCachedProducts } from "./lib/products-cache";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://albilaad-ksa.com";
 
