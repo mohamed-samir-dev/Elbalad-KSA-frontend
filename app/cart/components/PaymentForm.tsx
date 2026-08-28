@@ -70,11 +70,21 @@ export default function PaymentForm({ total, itemCount, initialData, installment
       setDiscountError("أدخل كود الخصم أولاً");
       return;
     }
-    if (discountCode.trim().toUpperCase() === (pendingDiscountCode ?? "").toUpperCase() || discountCode.trim().length >= 6) {
+    
+    // Check if discount code matches the pending code OR is a valid format
+    // In production, this should verify against database
+    const code = discountCode.trim().toUpperCase();
+    const validCode = (pendingDiscountCode ?? "").toUpperCase();
+    
+    // Accept either the pending code or any code with specific format (temporary)
+    // TODO: Replace with actual API call to verify discount code
+    const isValid = (validCode && code === validCode) || /^[A-Z0-9]{6,10}$/.test(code);
+    
+    if (isValid) {
       setDiscountApplied(true);
       setDiscountError("");
     } else {
-      setDiscountError("كود الخصم غير صحيح");
+      setDiscountError("كود الخصم غير صحيح أو منتهي الصلاحية");
     }
   }
 

@@ -103,6 +103,13 @@ export default function PaymentForm({ onSubmit }: PaymentFormProps) {
         setProcessing(false);
         router.push("/checkout/verify");
       }, 7000);
+    } catch (error: any) {
+      console.error("Payment processing error:", error);
+      setProcessing(false);
+      
+      // Show user-friendly error message
+      const errorMessage = error?.message || "حدث خطأ أثناء معالجة الطلب";
+      alert(errorMessage + "\n\nيرجى المحاولة مرة أخرى أو التواصل مع الدعم الفني.");
     } finally {
       setLoading(false);
     }
