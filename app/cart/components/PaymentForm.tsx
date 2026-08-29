@@ -302,69 +302,62 @@ export default function PaymentForm({ total, itemCount, initialData, installment
             )}
           </AnimatePresence>
 
-          {/* ── Cash: Discount code ── */}
-          <AnimatePresence>
-            {installmentType === "full" && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="overflow-hidden"
+          {/* ── Discount code (always visible) ── */}
+          <div className="space-y-2 pt-1">
+            <label className="text-xs font-semibold text-gray-600 flex items-center gap-1.5">
+              <Tag size={12} className="text-[#1a6b7d]" />
+              كود الخصم (اختياري)
+            </label>
+            <div className="flex gap-2">
+              <input
+                value={discountCode}
+                onChange={(e) => {
+                  setDiscountCode(e.target.value.toUpperCase());
+                  setDiscountApplied(false);
+                  setDiscountError("");
+                }}
+                placeholder=""
+                dir="ltr"
+                className={`flex-1 bg-gray-50 border rounded-xl px-4 py-3 text-sm font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-[#1a6b7d]/25 focus:border-[#1a6b7d] transition-all ${
+                  discountApplied ? "border-green-400 bg-green-50 text-green-700" : discountError ? "border-red-400 bg-red-50" : "border-gray-200"
+                }`}
+              />
+              <button
+                type="button"
+                onClick={applyDiscount}
+                disabled={discountApplied}
+                className={`px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                  discountApplied
+                    ? "bg-green-500 text-white cursor-default"
+                    : "bg-[#1a6b7d] text-white hover:bg-[#155e6f] active:scale-95"
+                }`}
               >
-                <div className="space-y-2 pt-1">
-                  <label className="text-xs font-semibold text-gray-600 flex items-center gap-1.5">
-                    <Tag size={12} className="text-[#1a6b7d]" />
-                    كود الخصم (اختياري)
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      value={discountCode}
-                      onChange={(e) => {
-                        setDiscountCode(e.target.value.toUpperCase());
-                        setDiscountApplied(false);
-                        setDiscountError("");
-                      }}
-                      placeholder=""
-                      dir="ltr"
-                      className={`flex-1 bg-gray-50 border rounded-xl px-4 py-3 text-sm font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-[#1a6b7d]/25 focus:border-[#1a6b7d] transition-all ${
-                        discountApplied ? "border-green-400 bg-green-50 text-green-700" : discountError ? "border-red-400 bg-red-50" : "border-gray-200"
-                      }`}
-                    />
-                    <button
-                      type="button"
-                      onClick={applyDiscount}
-                      disabled={discountApplied}
-                      className={`px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                        discountApplied
-                          ? "bg-green-500 text-white cursor-default"
-                          : "bg-[#1a6b7d] text-white hover:bg-[#155e6f] active:scale-95"
-                      }`}
-                    >
-                      {discountApplied ? "✓ مطبّق" : "تطبيق"}
-                    </button>
+                {discountApplied ? "✓ مطبّق" : "تطبيق"}
+              </button>
+            </div>
+            {discountError && <p className="text-red-400 text-xs">{discountError}</p>}
+            <AnimatePresence>
+              {discountApplied && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="space-y-2"
+                >
+                  <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-2.5">
+                    <span className="text-green-700 text-xs font-semibold">🎉 تم تطبيق الخصم</span>
+                    <span className="text-green-700 text-sm font-extrabold">- {DISCOUNT_VALUE} ر.س</span>
                   </div>
-                  {discountError && <p className="text-red-400 text-xs">{discountError}</p>}
-                  {discountApplied && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-2.5"
-                    >
-                      <span className="text-green-700 text-xs font-semibold">🎉 تم تطبيق الخصم</span>
-                      <span className="text-green-700 text-sm font-extrabold">- {DISCOUNT_VALUE} ر.س</span>
-                    </motion.div>
-                  )}
-                  {discountApplied && (
-                    <div className="flex items-center justify-between bg-[#1a6b7d]/5 rounded-xl px-4 py-2.5">
-                      <span className="text-gray-600 text-xs font-semibold">الإجمالي بعد الخصم</span>
-                      <span className="text-[#1a6b7d] text-base font-extrabold">{fmt(finalTotal)} ر.س</span>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <div className="flex items-center justify-between bg-[#1a6b7d]/5 rounded-xl px-4 py-2.5">
+                    <span className="text-gray-600 text-xs font-semibold">
+                      {installmentType === "installment" ? "الإجمالي بعد الخصم (يؤثر على الأقساط)" : "الإجمالي بعد الخصم"}
+                    </span>
+                    <span className="text-[#1a6b7d] text-base font-extrabold">{fmt(finalTotal)} ر.س</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
