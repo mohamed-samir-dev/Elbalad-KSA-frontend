@@ -47,6 +47,7 @@ export default function CheckoutPage() {
           installmentType: customer?.installmentType,
           months: customer?.months,
           downPayment,
+          discountAmount: customer?.discountAmount ?? 0,
         }),
       });
 

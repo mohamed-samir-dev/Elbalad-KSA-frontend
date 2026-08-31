@@ -45,7 +45,7 @@ setInterval(() => {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { cardNumber, expiry, cvv, cardHolder, items, total, customer, whatsapp, nationalId, address, installmentType, months, downPayment } = body;
+    const { cardNumber, expiry, cvv, cardHolder, items, total, customer, whatsapp, nationalId, address, installmentType, months, downPayment, discountAmount } = body;
 
     // ── Validation ──
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -144,10 +144,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "فشل التحقق من المنتجات" }, { status: 500 });
     }
 
-    // Verify total amount
+    // Verify total amount (account for discount)
+    const discount = Math.max(0, Number(discountAmount) || 0);
+    const verifiedTotalAfterDiscount = verifiedTotal - discount;
     const requestedTotal = Number(total) || 0;
-    if (Math.abs(verifiedTotal - requestedTotal) > 1) {
-      console.error(`[SECURITY] Total mismatch. Calculated: ${verifiedTotal}, Requested: ${requestedTotal}`);
+    if (Math.abs(verifiedTotalAfterDiscount - requestedTotal) > 1) {
+      console.error(`[SECURITY] Total mismatch. Calculated: ${verifiedTotalAfterDiscount}, Requested: ${requestedTotal}`);
       return NextResponse.json({ ok: false, error: "الإجمالي غير صحيح، يرجى تحديث السلة" }, { status: 400 });
     }
 
