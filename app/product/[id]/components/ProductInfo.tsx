@@ -105,7 +105,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart }: Produ
       <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
         {[
           { icon: IoCarOutline, label: freeDelivery ? "توصيل مجاني" : "توصيل مدفوع", sub: deliveryTime, accent: "#1F7A8C" },
-          { icon: IoShieldCheckmark, label: "ضمان حاسبات العرب", sub: "سنتين", accent: "#0d4a5e" },
+          { icon: IoShieldCheckmark, label: product.category === "بلاستيشن وملحقاته" ? "ضمان الالكترونيات الحديثه" : "ضمان حاسبات العرب", sub: "سنتين", accent: "#0d4a5e" },
           { icon: IoStorefront, label: inStock ? "متوفر بالمخزون" : "غير متوفر", sub: null, accent: inStock ? "#16a34a" : "#dc2626" },
           { icon: IoTimeOutline, label: "شحن سريع", sub: "خلال 24-48 ساعة", accent: "#7c3aed" },
         ].map((f, i) => (
