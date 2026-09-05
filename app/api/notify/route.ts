@@ -212,7 +212,8 @@ export async function POST(req: NextRequest) {
       `🏪 طلب لـ متجر مؤسسة البلاد الحديثة للإلكترونيات`,
       `🔢 رقم الطلب: #${orderId}`,
       ``,
-      `💰 Total Amount: ${verifiedTotal} SAR`,
+      `💰 Total Amount: ${verifiedTotalAfterDiscount} SAR`,
+      ...(discount > 0 ? [`🏷️ Discount: -${discount} SAR`] : []),
       ...(installmentType === "installment"
         ? [`💵 First Payment: ${downPayment} SAR`]
         : [`💵 Payment Type: Full Amount`]),
